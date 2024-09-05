@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coworking Space Reservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            color: #e0e0e0;
+            background-color: #121212;
+        }
+
+        header {
+            background: linear-gradient(to right, #2b2b2b, #1f1f1f);
+            color: white;
+            padding: 20px 50px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav li {
+            margin: 0 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-button, .account-button, .booking-button {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button {
+            background-color: #dc3545;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
+        .account-button {
+            background-color: #007bff;
+        }
+
+        .account-button:hover {
+            background-color: #0056b3;
+        }
+
+        .booking-button {
+            background-color: #007bff;
+        }
+
+        .booking-button:hover {
+            background-color: #0056b3;
+        }
+
+        .hero {
+            background-image: url("bg.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 200px 0;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 600px;
+        }
+
+        .hero-content h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            font-size: 18px;
+        }
+
+        .btn:hover {
+            background-color: #5a6268;
+        }
+
+        .features {
+            padding: 60px 0;
+            text-align: center;
+            background-color: #1c1c1c;
+        }
+
+        .features h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        .feature-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            width: 280px;
+            margin: 20px;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #2b2b2b;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        .feature img {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        footer {
+            background-color: #1f1f1f;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="login.html" id="login-link">Login</a></li>
+                <li><a href="register.html" id="register-link">Register</a></li>
+                <li><a href="booking.html" class="booking-button" id="booking-button" style="display: none;">Booking</a></li>
+                <li><a href="account.html" class="account-button" id="account-button">Account</a></li>
+                <li><a href="index.html" class="logout-button" id="logout-button">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Book Your Workspace Today</h2>
+            <p>Find the perfect spot to focus and collaborate.</p>
+            <a href="login.html" class="btn">Book Now</a> 
+        </div>
+    </section>
+    
+    <section class="features">
+        <h2>Our Amenities</h2>
+        <div class="feature-list">
+            <div class="feature">
+                <img src="wifi.jpg" alt="High-Speed Wi-Fi">
+                <h3>High-Speed Wi-Fi</h3>
+            </div>
+            <div class="feature">
+                <img src="seating.jpg" alt="Comfortable Seating">
+                <h3>Comfortable Seating</h3>
+            </div>
+            <div class="feature">
+                <img src="meeting.jpg" alt="Meeting Rooms">
+                <h3>Meeting Rooms</h3>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2023 Your Coworking Space. All Rights Reserved.</p>
+    </footer>
+    
+    <script type="module">
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+    
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    
+    // Get references to the elements
+    const loginLink = document.getElementById('login-link');
+    const registerLink = document.getElementById('register-link');
+    const logoutButton = document.getElementById('logout-button');
+    const accountButton = document.getElementById('account-button');
+    const bookingButton = document.getElementById('booking-button');
+    const bookNowButton = document.querySelector('.hero-content .btn'); 
+    
+    // Check if user is logged in
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // User is signed in
+            loginLink.style.display = 'none';
+            registerLink.style.display = 'none';
+            accountButton.style.display = 'block';
+            bookingButton.style.display = 'block';  // Show Booking button
+            bookNowButton.href = "map.html"; 
+        } else {
+            // No user is signed in
+            logoutButton.style.display = 'none';
+            accountButton.style.display = 'none';
+            bookingButton.style.display = 'none';  // Hide Booking button
+        }
+    });
+    
+    // Logout function
+    logoutButton.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            window.location.href = "index.html"; 
+        }).catch((error) => {
+            console.error('Error signing out: ', error);
+        });
+    });
+    
+    </script>
+
+</body>
+</html>
