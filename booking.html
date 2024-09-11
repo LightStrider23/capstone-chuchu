@@ -274,9 +274,9 @@
                 const row = bookingTable.insertRow();
                 row.insertCell().textContent = bookingNumber; // Booking number
                 row.insertCell().textContent = booking.location;
-                row.insertCell().textContent = formatDate(booking.timestamp); // Date
-                row.insertCell().textContent = formatTime(booking.timestamp); // Time
-                row.insertCell().textContent = booking.email;
+                row.insertCell().textContent = booking.date; // Date
+                row.insertCell().textContent = booking.time; // Time
+                row.insertCell().textContent = auth.currentUser.email;
 
                 const actionCell = row.insertCell();
                 const deleteButton = document.createElement("button");
