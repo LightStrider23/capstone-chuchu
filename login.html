@@ -69,6 +69,7 @@
         .login-container form {
             display: flex;
             flex-direction: column;
+            margin-bottom: 20px; /* Added margin for spacing */
         }
 
         .login-container input[type="email"],
@@ -117,6 +118,31 @@
         .login-container .register-link a:hover {
             color: #5a6268;
         }
+
+        .switcher {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .switcher button {
+            background-color: transparent;
+            color: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .switcher button:hover {
+            color: #6c757d;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -135,71 +161,147 @@
 </header>
 
 <div class="login-container">
-    <h2>Login</h2>
-    <form action="#" method="post">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="submit" value="Login">
-    </form>
+    <h2 id="formTitle">Login as Rentee</h2>
+
+    <div id="renteeLoginForm">
+        <form action="#" method="post">
+            <input type="email" name="email" placeholder="Rentee Email" required>
+            <input type="password" name="password" placeholder="Rentee Password" required>
+            <input type="submit" value="Login as Rentee">
+        </form>
+    </div>
+
+    <div id="renterLoginForm" class="hidden">
+        <form action="#" method="post">
+            <input type="email" name="email" placeholder="Renter Email" required>
+            <input type="password" name="password" placeholder="Renter Password" required>
+            <input type="submit" value="Login as Renter">
+        </form>
+    </div>
+
+    <div class="switcher">
+        <button id="toggleToRentee" class="hidden">Switch to Rentee Login</button>
+        <button id="toggleToRenter">Switch to Renter Login</button>
+    </div>
+
     <div class="register-link">
         Don't have an account? <a href="register.html">Register</a>
     </div>
 </div>
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-    authDomain: "capstone-52517.firebaseapp.com",
-    projectId: "capstone-52517",
-    storageBucket: "capstone-52517.appspot.com",
-    messagingSenderId: "73406159561",
-    appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-    measurementId: "G-PGMLKNHSP2"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  // Redirect if already logged in
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      window.location.href = 'index.html'; // Redirect to home if already logged in
-    }
-  });
-
-  // Function to handle user login
-  document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
-
-    const email = document.querySelector('input[name="email"]').value;
-    const password = document.querySelector('input[name="password"]').value;
-
-    // Sign in with email and password using Firebase Authentication
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Successfully logged in
-        const user = userCredential.user;
-        alert("Login successful!");
-        console.log("User logged in:", user);
-        // Optionally redirect to a different page
-        window.location.href = "index.html";
-      })
-      .catch((error) => {
-        // Handle errors here
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(`Error: ${errorMessage}`);
-        console.error("Error logging in:", errorCode, errorMessage);
-      });
-  });
-</script>
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+      authDomain: "capstone-52517.firebaseapp.com",
+      projectId: "capstone-52517",
+      storageBucket: "capstone-52517.appspot.com",
+      messagingSenderId: "73406159561",
+      appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+      measurementId: "G-PGMLKNHSP2"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+  
+    // Function to handle user login for rentee
+    document.querySelector('#renteeLoginForm form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting normally
+  
+      const email = document.querySelector('#renteeLoginForm input[name="email"]').value;
+      const password = document.querySelector('#renteeLoginForm input[name="password"]').value;
+  
+      // Sign in with email and password using Firebase Authentication
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Successfully logged in
+          const user = userCredential.user;
+          // Check user type in the database
+          return get(ref(db, 'rentees/' + user.uid));
+        })
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            alert("Rentee Login successful!");
+            console.log("Rentee logged in:", snapshot.val());
+            // Redirect to rentee.html
+            window.location.href = "rentee.html";
+          } else {
+            alert("Login failed. You do not have Rentee access.");
+            // Sign out the user if the type does not match
+            auth.signOut();
+          }
+        })
+        .catch((error) => {
+          // Handle errors here
+          const errorMessage = error.message;
+          alert(`Error: ${errorMessage}`);
+          console.error("Error logging in as rentee:", errorMessage);
+        });
+    });
+  
+    // Function to handle user login for renter
+    document.querySelector('#renterLoginForm form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting normally
+  
+      const email = document.querySelector('#renterLoginForm input[name="email"]').value;
+      const password = document.querySelector('#renterLoginForm input[name="password"]').value;
+  
+      // Sign in with email and password using Firebase Authentication
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Successfully logged in
+          const user = userCredential.user;
+          // Check user type in the database
+          return get(ref(db, 'renters/' + user.uid));
+        })
+        .then((snapshot) => {
+          if (snapshot.exists() && snapshot.val().type === 'renter') {
+            alert("Renter Login successful!");
+            console.log("Renter logged in:", snapshot.val());
+            // Redirect to renter.html
+            window.location.href = "renter.html";
+          } else {
+            alert("Login failed. You do not have Renter access.");
+            // Sign out the user if the type does not match
+            auth.signOut();
+          }
+        })
+        .catch((error) => {
+          // Handle errors here
+          const errorMessage = error.message;
+          alert(`Error: ${errorMessage}`);
+          console.error("Error logging in as renter:", errorMessage);
+        });
+    });
+  
+    // Switch login forms
+    document.getElementById("toggleToRentee").addEventListener("click", function() {
+      document.getElementById("renteeLoginForm").classList.remove("hidden");
+      document.getElementById("renterLoginForm").classList.add("hidden");
+      document.getElementById("formTitle").innerText = "Login as Rentee";
+      document.getElementById("toggleToRentee").classList.add("hidden");
+      document.getElementById("toggleToRenter").classList.remove("hidden");
+    });
+  
+    document.getElementById("toggleToRenter").addEventListener("click", function() {
+      document.getElementById("renteeLoginForm").classList.add("hidden");
+      document.getElementById("renterLoginForm").classList.remove("hidden");
+      document.getElementById("formTitle").innerText = "Login as Renter";
+      document.getElementById("toggleToRentee").classList.remove("hidden");
+      document.getElementById("toggleToRenter").classList.add("hidden");
+    });
+  </script>
+  
+  
 
 </body>
 </html>

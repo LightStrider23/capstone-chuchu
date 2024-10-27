@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -119,95 +120,213 @@
         .register-container .login-link a:hover {
             color: #5a6268;
         }
+
+        .fade {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade.show {
+            opacity: 1;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="login.html">Login</a></li>
-        </ul>
-    </nav>
-</header>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="register-container">
-    <h2>Register</h2>
-    <form id="register-form">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <input type="password" id="confirm_password" placeholder="Confirm Password" required>
-        <input type="submit" value="Register">
-    </form>
-    <div class="login-link">
-        Already have an account? <a href="login.html">Login</a>
+    <div class="register-container">
+        <h2>Register</h2>
+
+        <!-- Dropdown to toggle between Rentee and Renter -->
+        <label for="toggle-form">Select Registration Type:</label>
+        <select id="toggle-form">
+            <option value="rentee">Rentee</option>
+            <option value="renter">Renter</option>
+        </select>
+
+        <!-- Rentee Form -->
+        <div id="rentee-form" class="fade show">
+            <form id="rentee-register-form">
+                <input type="text" id="rentee-username" placeholder="Username" required>
+                <input type="email" id="rentee-email" placeholder="Email" required>
+                <input type="password" id="rentee-password" placeholder="Password" required>
+                <input type="password" id="rentee-confirm_password" placeholder="Confirm Password" required>
+                <input type="submit" value="Register as Rentee">
+            </form>
+        </div>
+
+        <!-- Renter Form (Initially Hidden) -->
+        <div id="renter-form" class="fade" style="display:none;">
+            <form id="renter-register-form">
+                <input type="text" id="renter-username" placeholder="Username" required>
+                <input type="email" id="renter-email" placeholder="Email" required>
+                <input type="password" id="renter-password" placeholder="Password" required>
+                <input type="password" id="renter-confirm_password" placeholder="Confirm Password" required>
+                <input type="submit" value="Register as Renter">
+            </form>
+        </div>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
     </div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-  // Your Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-    authDomain: "capstone-52517.firebaseapp.com",
-    projectId: "capstone-52517",
-    storageBucket: "capstone-52517.appspot.com",
-    messagingSenderId: "73406159561",
-    appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-    measurementId: "G-PGMLKNHSP2",
-    databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com/" // Your Realtime Database URL
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-  const database = getDatabase(app);
-
-  document.getElementById('register-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    // Register the user
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-
-        // Structure to save the data in the database
-        const userData = {
-          username: username,
-          email: email,
-          createdAt: new Date().toISOString()
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+            authDomain: "capstone-52517.firebaseapp.com",
+            projectId: "capstone-52517",
+            storageBucket: "capstone-52517.appspot.com",
+            messagingSenderId: "73406159561",
+            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+            measurementId: "G-PGMLKNHSP2",
+            databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com/" // Your Realtime Database URL
         };
 
-        // Save user data in Realtime Database under a structured JSON tree
-        set(ref(database, 'users/' + user.uid), userData)
-          .then(() => {
-            alert('User registered and data stored in Realtime Database!');
-            window.location.href = 'index.html'; // Redirect to home page after successful registration
-          })
-          .catch((error) => {
-            console.error('Error storing user data:', error);
-            alert('Failed to store user data: ' + error.message);
-          });
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase(app);
 
-      })
-      .catch((error) => {
-        console.error('Error during registration:', error);
-        alert('Registration failed: ' + error.message);
-      });
-  });
-</script>
+        // Toggle between Rentee and Renter forms
+        document.getElementById('toggle-form').addEventListener('change', function (event) {
+            const selectedForm = event.target.value;
+            if (selectedForm === 'rentee') {
+                document.getElementById('renter-form').style.display = 'none';
+                document.getElementById('rentee-form').style.display = 'block';
+            } else {
+                document.getElementById('rentee-form').style.display = 'none';
+                document.getElementById('renter-form').style.display = 'block';
+            }
+        });
+
+        // Rentee Registration
+        document.getElementById('rentee-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('rentee-username').value;
+            const email = document.getElementById('rentee-email').value;
+            const password = document.getElementById('rentee-password').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // Structure to save Rentee data
+                    const renteeData = {
+                        username: username,
+                        email: email,
+                        type: 'rentee',
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Save Rentee data in the database
+                    set(ref(database, 'rentees/' + user.uid), renteeData)
+                        .then(() => {
+                            alert('Rentee registered successfully! Click OK to sign out.');
+                            signOut(auth).then(() => {
+                                window.location.href = 'index.html'; // Redirect to the homepage after signing out
+                            }).catch((error) => {
+                                console.error('Error signing out:', error);
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error storing rentee data:', error);
+                            alert('Failed to store rentee data: ' + error.message);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error during rentee registration:', error);
+                    alert('Rentee registration failed: ' + error.message);
+                });
+        });
+
+        // Renter Registration
+        document.getElementById('renter-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('renter-username').value;
+            const email = document.getElementById('renter-email').value;
+            const password = document.getElementById('renter-password').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // Structure to save Renter data
+                    const renterData = {
+                        username: username,
+                        email: email,
+                        type: 'renter',
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Save Renter data in the database
+                    set(ref(database, 'renters/' + user.uid), renterData)
+                        .then(() => {
+                            alert('Renter registered successfully!');
+                            signOut(auth).then(() => {
+                                window.location.href = 'index.html'; // Redirect to the homepage after signing out
+                            }).catch((error) => {
+                                console.error('Error signing out:', error);
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Error storing renter data:', error);
+                            alert('Failed to store renter data: ' + error.message);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error during renter registration:', error);
+                    alert('Renter registration failed: ' + error.message);
+                });
+        });
+
+        document.getElementById('toggle-form').addEventListener('change', function () {
+            const renteeForm = document.getElementById('rentee-form');
+            const renterForm = document.getElementById('renter-form');
+
+            // Fade out the current form
+            if (renteeForm.classList.contains('show')) {
+                renteeForm.classList.remove('show');
+                setTimeout(() => {
+                    renteeForm.style.display = 'none';
+                    renterForm.style.display = 'block';
+                    renterForm.classList.add('show');
+                }, 500); // Wait for fade-out transition to finish
+            } else {
+                renterForm.classList.remove('show');
+                setTimeout(() => {
+                    renterForm.style.display = 'none';
+                    renteeForm.style.display = 'block';
+                    renteeForm.classList.add('show');
+                }, 500); // Wait for fade-out transition to finish
+            }
+        });
+    </script>
+
+
+
+
+
 
 </body>
+
 </html>
