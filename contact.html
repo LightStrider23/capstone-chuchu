@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoWorking Space Rentals</title>
+    <style>
+
+      
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        color: #e0e0e0;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header nav{
+        margin:  auto;
+      }
+
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      header nav li {
+        margin-right: 20px;
+      }
+
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      header nav a:hover {
+        color: #ccc;
+      }
+
+      .renter-container,
+      .reserved-rentees {
+        background-color: #1f1f1f;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 600px;
+        margin: 50px auto;
+        text-align: center;
+      }
+
+      .renter-container h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #e0e0e0;
+      }
+
+      .renter-container form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .renter-container input[type="text"],
+      .renter-container input[type="email"],
+      .renter-container input[type="number"],
+      .renter-container textarea {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #333;
+        background-color: #2b2b2b;
+        color: #e0e0e0;
+        font-size: 16px;
+      }
+
+      .renter-container input[type="text"]::placeholder,
+      .renter-container input[type="email"]::placeholder,
+      .renter-container input[type="number"]::placeholder,
+      .renter-container textarea::placeholder {
+        color: #888;
+      }
+
+      .renter-container input[type="submit"] {
+        background-color: #6c757d;
+        color: white;
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+      }
+
+      .renter-container input[type="submit"]:hover {
+        background-color: #5a6268;
+      }
+
+      .renter-container .login-link {
+        margin-top: 20px;
+        color: #e0e0e0;
+      }
+
+      .renter-container .login-link a {
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .renter-container .login-link a:hover {
+        color: #5a6268;
+      }
+
+      footer{
+        text-align: center;
+      }
+      .logout-button {
+        justify-content: center;
+        padding: 10px 20px;
+        background-color: #444;
+        color: #f5f5f5;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: auto;
+      }
+
+      .logout-button:hover {
+        background-color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+        <button class="logout-button" onclick="logoutUser()">Logout</button>
+      </nav>
+    </header>
+
+    <div class="renter-container">
+      <h2>Contact Us</h2>
+      <p>
+        We'd love to hear from you! Fill out the form below for any inquiries or
+        reservations.
+      </p>
+      <form action="/submit-contact-form" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <input type="number" name="phone" placeholder="Phone Number" required />
+        <textarea
+          name="message"
+          rows="4"
+          placeholder="Message"
+          required
+        ></textarea>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 CoWorking Space Rentals. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -1,221 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cozy Coworking Spaces</title>
     <style>
-        .logout-button {
-            padding: 10px 20px;
-            background-color: #444;
-            color: #f5f5f5;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-left: auto;
-        }
+      .logout-button {
+        padding: 10px 20px;
+        background-color: #444;
+        color: #f5f5f5;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-left: auto;
+      }
 
-        .logout-button:hover {
-            background-color: #666;
-        }
+      .logout-button:hover {
+        background-color: #666;
+      }
 
-        header h1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+      header h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        header nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+      header nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a1a;
-            color: #f5f5f5;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #1a1a1a;
+        color: #f5f5f5;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        header {
-            background-color: #1a1a1a;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
 
-        header nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
 
-        header nav li {
-            margin-right: 20px;
-        }
+      header nav li {
+        margin-right: 20px;
+      }
 
-        header nav a {
-            color: #e0e0e0;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
 
-        header nav a:hover {
-            color: #ccc;
-        }
+      header nav a:hover {
+        color: #ccc;
+      }
 
-        main {
-            padding: 20px;
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      main {
+        padding: 20px;
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        #spaces-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
+      #spaces-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
 
-        .space-card {
-            background-color: #2a2a2a;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-        }
+      .space-card {
+        background-color: #2a2a2a;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 300px;
+        text-align: center;
+      }
 
-        .space-card h3 {
-            margin-top: 0;
-            color: #ffd700;
-        }
+      .space-card h3 {
+        margin-top: 0;
+        color: #ffd700;
+      }
 
-        .space-card p {
-            margin: 10px 0;
-        }
+      .space-card p {
+        margin: 10px 0;
+      }
 
-        .space-card .available {
-            color: #32cd32;
-        }
+      .space-card .available {
+        color: #32cd32;
+      }
 
-        .reserve-button {
-            padding: 10px 20px;
-            background-color: #444;
-            color: #f5f5f5;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+      .reserve-button {
+        padding: 10px 20px;
+        background-color: #444;
+        color: #f5f5f5;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-        .reserve-button:hover {
-            background-color: #666;
-        }
+      .reserve-button:hover {
+        background-color: #666;
+      }
 
-        footer {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            background-color: #333;
-            color: #777;
-            border-top: 1px solid #444;
-            position: fixed;
-            bottom: 0;
-        }
+      footer {
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        background-color: #333;
+        color: #777;
+        border-top: 1px solid #444;
+        position: fixed;
+        bottom: 0;
+      }
     </style>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+      import {
+        getAuth,
+        signOut,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-            authDomain: "capstone-52517.firebaseapp.com",
-            databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
-            projectId: "capstone-52517",
-            storageBucket: "capstone-52517.appspot.com",
-            messagingSenderId: "73406159561",
-            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-            measurementId: "G-PGMLKNHSP2"
-        };
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2",
+      };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth(app);
 
-        // Function to hide logout button if no user is logged in
-    function checkUserStatus() {
-        const logoutButton = document.querySelector('.logout-button');
+      // Function to hide logout button if no user is logged in
+      function checkUserStatus() {
+        const logoutButton = document.querySelector(".logout-button");
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is logged in, show logout button
-                logoutButton.style.display = 'block';
-            } else {
-                // No user is logged in, hide logout button
-                logoutButton.style.display = 'none';
-            }
+          if (user) {
+            // User is logged in, show logout button
+            logoutButton.style.display = "block";
+          } else {
+            // No user is logged in, hide logout button
+            logoutButton.style.display = "none";
+          }
         });
-    }
+      }
 
-        // Logout function
-        function logoutUser() {
-            signOut(auth).then(() => {
-                alert('Logged out successfully.');
-                window.location.href = 'index.html'; // Redirect to login page after logout
-            }).catch((error) => {
-                console.error('Error logging out:', error);
-            });
-        }
+      // Logout function
+      function logoutUser() {
+        signOut(auth)
+          .then(() => {
+            alert("Logged out successfully.");
+            window.location.href = "index.html"; // Redirect to login page after logout
+          })
+          .catch((error) => {
+            console.error("Error logging out:", error);
+          });
+      }
 
-        // Attach logoutUser to the window object
-window.logoutUser = logoutUser;
+      // Attach logoutUser to the window object
+      window.logoutUser = logoutUser;
 
-        // Function to load and display spaces
-        function loadSpaces() {
-            const spacesList = document.getElementById('spaces-list');
+      // Function to load and display spaces
+      function loadSpaces() {
+        const spacesList = document.getElementById("spaces-list");
 
-            // Reference to all spaces under every renter
-            const rentersRef = ref(database, 'renters');
+        // Reference to all spaces under every renter
+        const rentersRef = ref(database, "renters");
 
-            // Get data from Firebase
-            get(rentersRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const renters = snapshot.val();
+        // Get data from Firebase
+        get(rentersRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const renters = snapshot.val();
 
-                    // Loop through all renters
-                    Object.keys(renters).forEach(renterUid => {
-                        const spaces = renters[renterUid].spaces;
+              // Loop through all renters
+              Object.keys(renters).forEach((renterUid) => {
+                const spaces = renters[renterUid].spaces;
 
-                        // Loop through spaces of each renter
-                        if (spaces) {
-                            Object.keys(spaces).forEach(spaceKey => {
-                                const space = spaces[spaceKey];
+                // Loop through spaces of each renter
+                if (spaces) {
+                  Object.keys(spaces).forEach((spaceKey) => {
+                    const space = spaces[spaceKey];
 
-                                // Create space card
-                                const spaceCard = document.createElement('div');
-                                spaceCard.classList.add('space-card');
+                    // Create space card
+                    const spaceCard = document.createElement("div");
+                    spaceCard.classList.add("space-card");
 
-                                // Set inner content for the space card
-                                spaceCard.innerHTML = `
+                    // Set inner content for the space card
+                    spaceCard.innerHTML = `
                             <h3>${space.spaceName}</h3>
                             <p>Location: ${space.location}</p>
                             <p>Total Rooms: ${space.totalRooms}</p>
@@ -225,56 +235,53 @@ window.logoutUser = logoutUser;
                             <button class="reserve-button" onclick="window.location.href='rentee.html'">Reserve</button>
                         `;
 
-                                // Append the space card to the list
-                                spacesList.appendChild(spaceCard);
-                            });
-                        }
-                    });
-                } else {
-                    spacesList.innerHTML = "<p>No spaces available at the moment.</p>";
+                    // Append the space card to the list
+                    spacesList.appendChild(spaceCard);
+                  });
                 }
-            }).catch((error) => {
-                console.error('Error retrieving spaces:', error);
-                spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
-            });
-        }
+              });
+            } else {
+              spacesList.innerHTML =
+                "<p>No spaces available at the moment.</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error retrieving spaces:", error);
+            spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
+          });
+      }
 
-        // Load spaces when the page loads
-        window.onload = () => {
-            checkUserStatus();
-            loadSpaces();
-        };
-
+      // Load spaces when the page loads
+      window.onload = () => {
+        checkUserStatus();
+        loadSpaces();
+      };
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>Available Coworking Spaces</h1>
+      <h1>Available Coworking Spaces</h1>
 
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-            <button class="logout-button" onclick="logoutUser()">Logout</button>
-        </nav>
-
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+        <button class="logout-button" onclick="logoutUser()">Logout</button>
+      </nav>
     </header>
 
     <main>
-        <div id="spaces-list">
-            <!-- Spaces will be displayed here -->
-        </div>
+      <div id="spaces-list">
+        <!-- Spaces will be displayed here -->
+      </div>
     </main>
 
-    <footer>
-        &copy; 2024 Cozy Coworking Spaces
-    </footer>
-</body>
-
+    <footer>&copy; 2024 Cozy Coworking Spaces</footer>
+  </body>
 </html>

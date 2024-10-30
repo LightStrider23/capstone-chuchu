@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        color: #e0e0e0;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      header nav li {
+        margin-right: 20px;
+      }
+
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      header nav a:hover {
+        color: #ccc;
+      }
+
+      .about-container {
+        background-color: #1f1f1f;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 800px;
+        margin: 50px auto;
+        text-align: center;
+      }
+
+      .about-container h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #e0e0e0;
+      }
+
+      .about-container p {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      .about-container img {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      footer {
+        background-color: #1a1a1a;
+        padding: 20px 0;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      footer p {
+        color: #e0e0e0;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="about-container">
+      <h2>Welcome to Our Coworking Space</h2>
+      <p>
+        At Our CoWorking Hub, we believe that productive work starts with a
+        comfortable environment. We offer state-of-the-art coworking spaces
+        designed to inspire creativity and collaboration.
+      </p>
+
+      <img
+        src="https://via.placeholder.com/800x400?text=Cozy+Coworking+Space"
+        alt="Cozy Coworking Space"
+      />
+
+      <p>
+        Our space is equipped with high-speed internet, ample seating, and a
+        variety of amenities to ensure that you have everything you need for
+        your workday. We also offer private offices and meeting rooms for those
+        who prefer a more focused environment.
+      </p>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 Our CoWorking Hub. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renter Registration - Coworking Space</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: "Roboto", sans-serif;
       margin: 0;
       color: #e0e0e0;
       background-color: #121212;
@@ -142,7 +142,6 @@
 </head>
 
 <body>
-
   <header>
     <nav>
       <ul>
@@ -150,22 +149,25 @@
         <li><a href="about.html">About</a></li>
         <li><a href="services.html">Services</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
       </ul>
+      <button class="logout-button" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
   <div class="renter-container">
     <h2>Renter Space Registration</h2>
     <form id="renter-registration-form">
-      <input type="hidden" id="space-id" value="">
-      <input type="text" id="space-name" placeholder="Name of the Space" required>
-      <input type="text" id="location" placeholder="Location of the Space" required>
-      <input type="number" id="total-rooms" placeholder="Total Rooms" required>
-      <input type="number" id="rented-rooms" placeholder="Rented Rooms" required>
-      <input type="number" id="price" placeholder="Price" required>
+      <input type="hidden" id="space-id" value="" />
+      <input type="text" id="space-name" placeholder="Name of the Space" required />
+      <input type="text" id="location" placeholder="Location of the Space" required />
+      <input type="number" id="total-rooms" placeholder="Total Rooms" required />
+      <input type="number" id="rented-rooms" placeholder="Rented Rooms" required />
+      <input type="number" id="price" placeholder="Price" required />
       <textarea id="description" rows="4" placeholder="Description of the Space" required></textarea>
-      <input type="submit" value="Register Space">
-
+      <input type="file" id="space-image" accept="image/*" />
+      <input type="submit" value="Register Space" />
     </form>
     <button class="logout-button" id="logout-button">Logout</button>
     <div class="login-link">
@@ -184,331 +186,473 @@
     <ul id="reserved-users-list"></ul>
     <!-- Spaces will be dynamically loaded here -->
   </div>
-
 </body>
 
 <script type="module">
-  // Import and configure Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-  import { getDatabase, ref, set, get, update, push, remove } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+// Import and configure Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import {
+  getDatabase,
+  ref as dbRef,
+  set,
+  get,
+  update,
+  push,
+  remove,
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+import {
+  getStorage,
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
 
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-    authDomain: "capstone-52517.firebaseapp.com",
-    databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
-    projectId: "capstone-52517",
-    storageBucket: "capstone-52517.appspot.com",
-    messagingSenderId: "73406159561",
-    appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-    measurementId: "G-PGMLKNHSP2"
-  };
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+  authDomain: "capstone-52517.firebaseapp.com",
+  databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+  projectId: "capstone-52517",
+  storageBucket: "capstone-52517.appspot.com",
+  messagingSenderId: "73406159561",
+  appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+  measurementId: "G-PGMLKNHSP2",
+};
+
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const database = getDatabase(app);
+  const storage = getStorage(app);
 
   // Check if the user is logged in and exists in the "renters" node
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
     // Your Firebase authentication and display logic here
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const userUid = user.uid;
-        const renterRef = ref(database, 'renters/' + userUid);
+        const renterRef = dbRef(database, "renters/" + userUid);
 
-        get(renterRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            // User exists in the renters node, allow access and load rented spaces
-            displayRentedSpaces();
-            displayReservations();
-          } else {
-            // User not found in renters node, redirect
-            alert('You are not registered as a renter.');
-            window.location.href = 'index.html';
-          }
-        }).catch((error) => {
-          console.error('Error checking renter status:', error);
-        });
+        get(renterRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              // User exists in the renters node, allow access and load rented spaces
+              displayRentedSpaces();
+              displayReservations();
+            } else {
+              // User not found in renters node, redirect
+              alert("You are not registered as a renter.");
+              window.location.href = "index.html";
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking renter status:", error);
+          });
       } else {
         // No user signed in, redirect to login
-        alert('Please log in first.');
-        window.location.href = 'login.html';
+        alert("Please log in first.");
+        window.location.href = "login.html";
       }
     });
   });
 
-
-  document.getElementById('renter-registration-form').addEventListener('submit', registerSpace);
+  document
+    .getElementById("renter-registration-form")
+    .addEventListener("submit", registerSpace);
 
   // Function to register or update a space
   function registerSpace(event) {
-  event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); // Prevent default form submission
 
-  const spaceId = document.getElementById('space-id').value; // Hidden input for space ID
-  const spaceName = document.getElementById('space-name').value;
-  const location = document.getElementById('location').value;
-  const totalRooms = document.getElementById('total-rooms').value;
-  const rentedRooms = document.getElementById('rented-rooms').value;
-  const description = document.getElementById('description').value;
-  const price = document.getElementById('price').value; // New hidden input for space price
+    const spaceId = document.getElementById("space-id").value; // Hidden input for space ID
+    const spaceName = document.getElementById("space-name").value;
+    const location = document.getElementById("location").value;
+    const totalRooms = document.getElementById("total-rooms").value;
+    const rentedRooms = document.getElementById("rented-rooms").value;
+    const description = document.getElementById("description").value;
+    const price = document.getElementById("price").value; // New hidden input for space price
+    const imageFile = document.getElementById("space-image").files[0];
+    const userUid = auth.currentUser.uid; // Get the current user ID
 
-  const userUid = auth.currentUser.uid; // Get the current user ID
+    const spaceData = {
+      spaceName,
+      location,
+      totalRooms: parseInt(totalRooms),
+      rentedRooms: parseInt(rentedRooms),
+      availableRooms: parseInt(totalRooms) - parseInt(rentedRooms), // Calculate available rooms
+      description,
+      price: parseFloat(price), // Convert price to a float for calculation
 
-  const spaceData = {
-    spaceName,
-    location,
-    totalRooms: parseInt(totalRooms),
-    rentedRooms: parseInt(rentedRooms),
-    availableRooms: parseInt(totalRooms) - parseInt(rentedRooms), // Calculate available rooms
-    description,
-    price: parseFloat(price) // Convert price to a float for calculation
-  };
+    };
 
-  if (spaceId) {
-    // Update existing space
-    update(ref(database, 'renters/' + userUid + '/spaces/' + spaceId), spaceData)
-      .then(() => {
-        alert('Space updated successfully!');
+    if (spaceId) {
+      // Update existing space and image URL
+      update(dbRef(database, "renters/" + userUid + "/spaces/" + spaceId), spaceData).then(() => {
+        return uploadImage(imageFile, userUid, spaceId);
+      }).then((imageUrl) => {
+        update(dbRef(database, `renters/${userUid}/spaces/${spaceId}`), { imageUrl });
+        alert("Space updated successfully!");
         clearForm();
         displayRentedSpaces(); // Refresh list
-      })
-      .catch((error) => {
-        console.error('Error updating space:', error);
-        alert('Failed to update space: ' + error.message);
+      }).catch((error) => {
+        console.error("Error updating space:", error);
+        alert("Failed to update space: " + error.message);
       });
-  } else {
-    // Create new space
-    const newSpaceRef = push(ref(database, 'renters/' + userUid + '/spaces'));
-    set(newSpaceRef, spaceData)
-      .then(() => {
-        alert('Space registered successfully!');
+    } else {
+      // Create new space, upload image and store image URL
+      const newSpaceRef = push(dbRef(database, "renters/" + userUid + "/spaces"));
+      set(newSpaceRef, spaceData).then(() => {
+        return uploadImage(imageFile, userUid, newSpaceRef.key);
+      }).then((imageUrl) => {
+        update(dbRef(database, `renters/${userUid}/spaces/${newSpaceRef.key}`), { imageUrl });
+        alert("Space registered successfully!");
         clearForm();
         displayRentedSpaces(); // Refresh list
-      })
-      .catch((error) => {
-        console.error('Error registering space:', error);
-        alert('Failed to register space: ' + error.message);
+      }).catch((error) => {
+        console.error("Error registering space:", error);
+        alert("Failed to register space: " + error.message);
       });
+    }
   }
+  // Function to upload the image and get its download URL
+function uploadImage(file, userUid, spaceId) {
+  const imageRef = storageRef(storage, `spaces/${userUid}/${spaceId}/${file.name}`); // Use a different name, like imageRef
+  return uploadBytes(imageRef, file)
+    .then((snapshot) => {
+      return getDownloadURL(snapshot.ref);
+    })
+    .catch((error) => {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image: " + error.message);
+      throw error;
+    });
 }
-
 
   // Function to clear the form
   function clearForm() {
-    document.getElementById('space-id').value = '';
-    document.getElementById('space-name').value = '';
-    document.getElementById('location').value = '';
-    document.getElementById('total-rooms').value = '';
-    document.getElementById('rented-rooms').value = '';
-    document.getElementById('description').value = '';
-    document.getElementById('price').value = '';
+    document.getElementById("space-id").value = "";
+    document.getElementById("space-name").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("total-rooms").value = "";
+    document.getElementById("rented-rooms").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("price").value = "";
   }
 
   // Function to display rented spaces for the current renter
   function displayRentedSpaces() {
     const userUid = auth.currentUser.uid;
-    const spacesRef = ref(database, 'renters/' + userUid + '/spaces');
+    const spacesRef = dbRef(database, "renters/" + userUid + "/spaces");
 
-    get(spacesRef).then((snapshot) => {
-      const spacesList = document.getElementById('spaces-list');
-      spacesList.innerHTML = ''; // Clear existing content
+    get(spacesRef)
+      .then((snapshot) => {
+        const spacesList = document.getElementById("spaces-list");
+        spacesList.innerHTML = ""; // Clear existing content
 
-      if (snapshot.exists()) {
-        const spacesData = snapshot.val();
+        if (snapshot.exists()) {
+          const spacesData = snapshot.val();
 
-        for (const spaceId in spacesData) {
-          const space = spacesData[spaceId];
+          for (const spaceId in spacesData) {
+            const space = spacesData[spaceId];
 
-          const spaceContainer = document.createElement('div');
-          spaceContainer.classList.add('space-item');
-          spaceContainer.style.padding = '10px';
-          spaceContainer.style.marginBottom = '15px';
-          spaceContainer.style.backgroundColor = '#2b2b2b';
-          spaceContainer.style.borderRadius = '5px';
-          spaceContainer.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.5)';
+            const spaceContainer = document.createElement("div");
+            spaceContainer.classList.add("space-item");
+            spaceContainer.style.padding = "10px";
+            spaceContainer.style.marginBottom = "15px";
+            spaceContainer.style.backgroundColor = "#2b2b2b";
+            spaceContainer.style.borderRadius = "5px";
+            spaceContainer.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
 
-          const spaceNameElem = document.createElement('h3');
-          spaceNameElem.textContent = space.spaceName;
-          spaceNameElem.style.color = '#e0e0e0';
+            const spaceNameElem = document.createElement("h3");
+            spaceNameElem.textContent = space.spaceName;
+            spaceNameElem.style.color = "#e0e0e0";
 
-          const locationElem = document.createElement('p');
-          locationElem.textContent = `Location: ${space.location}`;
-          locationElem.style.color = '#e0e0e0';
+            const locationElem = document.createElement("p");
+            locationElem.textContent = `Location: ${space.location}`;
+            locationElem.style.color = "#e0e0e0";
 
-          const totalRoomsElem = document.createElement('p');
-          totalRoomsElem.textContent = `Total Rooms: ${space.totalRooms}`;
-          totalRoomsElem.style.color = '#e0e0e0';
+            const totalRoomsElem = document.createElement("p");
+            totalRoomsElem.textContent = `Total Rooms: ${space.totalRooms}`;
+            totalRoomsElem.style.color = "#e0e0e0";
 
-          const rentedRoomsElem = document.createElement('p');
-          rentedRoomsElem.textContent = `Rented Rooms: ${space.rentedRooms}`;
-          rentedRoomsElem.style.color = '#e0e0e0';
+            const rentedRoomsElem = document.createElement("p");
+            rentedRoomsElem.textContent = `Rented Rooms: ${space.rentedRooms}`;
+            rentedRoomsElem.style.color = "#e0e0e0";
 
-          const availableRoomsElem = document.createElement('p');
-          availableRoomsElem.textContent = `Available Rooms: ${space.availableRooms}`;
-          availableRoomsElem.style.color = '#e0e0e0';
+            const availableRoomsElem = document.createElement("p");
+            availableRoomsElem.textContent = `Available Rooms: ${space.availableRooms}`;
+            availableRoomsElem.style.color = "#e0e0e0";
 
-          const descriptionElem = document.createElement('p');
-          descriptionElem.textContent = `Description: ${space.description}`;
-          descriptionElem.style.color = '#e0e0e0';
+            const descriptionElem = document.createElement("p");
+            descriptionElem.textContent = `Description: ${space.description}`;
+            descriptionElem.style.color = "#e0e0e0";
 
-          spaceContainer.appendChild(spaceNameElem);
-          spaceContainer.appendChild(locationElem);
-          spaceContainer.appendChild(totalRoomsElem);
-          spaceContainer.appendChild(rentedRoomsElem);
-          spaceContainer.appendChild(availableRoomsElem);
-          spaceContainer.appendChild(descriptionElem);
+            // Create Image element
+            const imageElem = document.createElement("img");
+            imageElem.src = space.imageUrl;
+            imageElem.alt = "Space Image";
+            imageElem.style.width = "100%";
+            imageElem.style.height = "auto";
 
-          spacesList.appendChild(spaceContainer);
+            // Create Edit button
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.style.backgroundColor = "#28a745";
+            editButton.style.color = "#fff";
+            editButton.style.border = "none";
+            editButton.style.padding = "8px 12px";
+            editButton.style.marginTop = "10px";
+            editButton.style.borderRadius = "5px";
+            editButton.style.cursor = "pointer";
+
+            // Add event listener to edit the specific space
+            editButton.addEventListener("click", () => {
+              editSpace(userUid, spaceId);
+            });
+
+            // Create Delete button
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.style.backgroundColor = "#dc3545";
+            deleteButton.style.color = "#fff";
+            deleteButton.style.border = "none";
+            deleteButton.style.padding = "8px 12px";
+            deleteButton.style.marginTop = "10px";
+            deleteButton.style.borderRadius = "5px";
+            deleteButton.style.cursor = "pointer";
+
+            // Add event listener to delete the specific space
+            deleteButton.addEventListener("click", () => {
+              deleteSpace(userUid, spaceId);
+            });
+
+            // Append all elements to the space container
+            spaceContainer.appendChild(imageElem);
+            spaceContainer.appendChild(spaceNameElem);
+            spaceContainer.appendChild(locationElem);
+            spaceContainer.appendChild(totalRoomsElem);
+            spaceContainer.appendChild(rentedRoomsElem);
+            spaceContainer.appendChild(availableRoomsElem);
+            spaceContainer.appendChild(descriptionElem);
+            spaceContainer.appendChild(editButton);
+            spaceContainer.appendChild(deleteButton);
+
+            // Append the space container to the spaces list
+            spacesList.appendChild(spaceContainer);
+          }
+        } else {
+          spacesList.innerHTML = "<p>No rented spaces found.</p>";
         }
-      } else {
-        spacesList.innerHTML = '<p>No rented spaces found.</p>';
-      }
-    }).catch((error) => {
-      console.error('Error retrieving rented spaces:', error);
-      alert('Failed to retrieve rented spaces: ' + error.message);
-    });
+      })
+      .catch((error) => {
+        console.error("Error retrieving rented spaces:", error);
+        alert("Failed to retrieve rented spaces: " + error.message);
+      });
   }
 
   function displayReservations() {
-  const userUid = auth.currentUser.uid; // Get the current user ID
-  const spacesRef = ref(database, 'renters/' + userUid + '/spaces'); // Reference to the renter's spaces
+    const userUid = auth.currentUser.uid; // Get the current user ID
+    const spacesRef = dbRef(database, "renters/" + userUid + "/spaces"); // Reference to the renter's spaces
 
-  // First, get the list of spaces rented by the current user
-  get(spacesRef).then((snapshot) => {
-    if (snapshot.exists()) {
-      const spacesData = snapshot.val();
-      const rentedSpaceIds = Object.keys(spacesData); // Get the space IDs rented by the user
-
-      const reservationsRef = ref(database, 'reservations');
-      get(reservationsRef).then((snapshot) => {
-        const reservationsContainer = document.getElementById('reserved-users-list');
-        reservationsContainer.innerHTML = ''; // Clear existing content
-
+    // First, get the list of spaces rented by the current user
+    get(spacesRef)
+      .then((snapshot) => {
         if (snapshot.exists()) {
-          const reservationsData = snapshot.val();
+          const spacesData = snapshot.val();
+          const rentedSpaceIds = Object.keys(spacesData); // Get the space IDs rented by the user
 
-          // Iterate over all rentees in the reservations
-          for (const renteeUid in reservationsData) {
-            const renteeReservations = reservationsData[renteeUid];
+          const reservationsRef = dbRef(database, "reservations");
+          get(reservationsRef)
+            .then((snapshot) => {
+              const reservationsContainer = document.getElementById(
+                "reserved-users-list"
+              );
+              reservationsContainer.innerHTML = ""; // Clear existing content
 
-            // Check for reservations that match the rented space IDs
-            rentedSpaceIds.forEach((spaceId) => {
-              if (renteeReservations[spaceId]) {
-                const spaceReservations = renteeReservations[spaceId];
+              if (snapshot.exists()) {
+                const reservationsData = snapshot.val();
 
-                // Iterate over the reservation IDs within this space
-                for (const reservationId in spaceReservations) {
-                  const reservationDetails = spaceReservations[reservationId];
+                // Iterate over all rentees in the reservations
+                for (const renteeUid in reservationsData) {
+                  const renteeReservations = reservationsData[renteeUid];
 
-                  // Create a div for each reservation
-                  const reservationDiv = document.createElement('div');
-                  reservationDiv.classList.add('reservation-item');
-                  reservationDiv.style.padding = '10px';
-                  reservationDiv.style.marginBottom = '15px';
-                  reservationDiv.style.backgroundColor = '#2b2b2b';
-                  reservationDiv.style.borderRadius = '5px';
-                  reservationDiv.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.5)';
+                  // Check for reservations that match the rented space IDs
+                  rentedSpaceIds.forEach((spaceId) => {
+                    if (renteeReservations[spaceId]) {
+                      const spaceReservations = renteeReservations[spaceId];
 
-                  // Accessing properties correctly
-                  const nameElem = document.createElement('h3');
-                  nameElem.textContent = `Name: ${reservationDetails.name}`;
-                  nameElem.style.color = '#e0e0e0';
+                      // Iterate over the reservation IDs within this space
+                      for (const reservationId in spaceReservations) {
+                        const reservationDetails =
+                          spaceReservations[reservationId];
 
-                  const emailElem = document.createElement('p');
-                  emailElem.textContent = `Email: ${reservationDetails.email}`;
-                  emailElem.style.color = '#e0e0e0';
+                        // Create a div for each reservation
+                        const reservationDiv = document.createElement("div");
+                        reservationDiv.classList.add("reservation-item");
+                        reservationDiv.style.padding = "10px";
+                        reservationDiv.style.marginBottom = "15px";
+                        reservationDiv.style.backgroundColor = "#2b2b2b";
+                        reservationDiv.style.borderRadius = "5px";
+                        reservationDiv.style.boxShadow =
+                          "0 2px 5px rgba(0, 0, 0, 0.5)";
 
-                  const phoneNumberElem = document.createElement('p');
-                  phoneNumberElem.textContent = `Phone Number: ${reservationDetails.phoneNumber}`;
-                  phoneNumberElem.style.color = '#e0e0e0';
+                        // Accessing properties correctly
+                        const nameElem = document.createElement("h3");
+                        nameElem.textContent = `Name: ${reservationDetails.name}`;
+                        nameElem.style.color = "#e0e0e0";
 
-                  const checkInDateElem = document.createElement('p');
-                  checkInDateElem.textContent = `Check-in Date: ${reservationDetails.checkInDate}`;
-                  checkInDateElem.style.color = '#e0e0e0';
+                        const emailElem = document.createElement("p");
+                        emailElem.textContent = `Email: ${reservationDetails.email}`;
+                        emailElem.style.color = "#e0e0e0";
 
-                  const checkOutDateElem = document.createElement('p');
-                  checkOutDateElem.textContent = `Check-out Date: ${reservationDetails.checkOutDate}`;
-                  checkOutDateElem.style.color = '#e0e0e0';
+                        const phoneNumberElem = document.createElement("p");
+                        phoneNumberElem.textContent = `Phone Number: ${reservationDetails.phoneNumber}`;
+                        phoneNumberElem.style.color = "#e0e0e0";
 
-                  // Create Delete button
-                  const deleteButton = document.createElement('button');
-                  deleteButton.textContent = 'Delete';
-                  deleteButton.style.backgroundColor = '#dc3545';
-                  deleteButton.style.color = '#fff';
-                  deleteButton.style.border = 'none';
-                  deleteButton.style.padding = '8px 12px';
-                  deleteButton.style.marginTop = '10px';
-                  deleteButton.style.borderRadius = '5px';
-                  deleteButton.style.cursor = 'pointer';
+                        const checkInDateElem = document.createElement("p");
+                        checkInDateElem.textContent = `Check-in Date: ${reservationDetails.checkInDate}`;
+                        checkInDateElem.style.color = "#e0e0e0";
 
-                  // Add event listener to delete the specific reservation
-                  deleteButton.addEventListener('click', () => {
-                    deleteReservation(renteeUid, spaceId, reservationId);
+                        const checkOutDateElem = document.createElement("p");
+                        checkOutDateElem.textContent = `Check-out Date: ${reservationDetails.checkOutDate}`;
+                        checkOutDateElem.style.color = "#e0e0e0";
+
+                        // Create Delete button
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.style.backgroundColor = "#dc3545";
+                        deleteButton.style.color = "#fff";
+                        deleteButton.style.border = "none";
+                        deleteButton.style.padding = "8px 12px";
+                        deleteButton.style.marginTop = "10px";
+                        deleteButton.style.borderRadius = "5px";
+                        deleteButton.style.cursor = "pointer";
+
+                        // Add event listener to delete the specific reservation
+                        deleteButton.addEventListener("click", () => {
+                          deleteReservation(
+                            renteeUid,
+                            spaceId,
+                            reservationId
+                          );
+                        });
+
+                        // Append all elements to the reservation div
+                        reservationDiv.appendChild(nameElem);
+                        reservationDiv.appendChild(emailElem);
+                        reservationDiv.appendChild(phoneNumberElem);
+                        reservationDiv.appendChild(checkInDateElem);
+                        reservationDiv.appendChild(checkOutDateElem);
+                        reservationDiv.appendChild(deleteButton);
+
+                        // Append the reservation div to the container
+                        reservationsContainer.appendChild(reservationDiv);
+                      }
+                    }
                   });
-
-                  // Append all elements to the reservation div
-                  reservationDiv.appendChild(nameElem);
-                  reservationDiv.appendChild(emailElem);
-                  reservationDiv.appendChild(phoneNumberElem);
-                  reservationDiv.appendChild(checkInDateElem);
-                  reservationDiv.appendChild(checkOutDateElem);
-                  reservationDiv.appendChild(deleteButton);
-
-                  // Append the reservation div to the container
-                  reservationsContainer.appendChild(reservationDiv);
                 }
+              } else {
+                reservationsContainer.innerHTML =
+                  "<p>No reservations found.</p>";
               }
+            })
+            .catch((error) => {
+              console.error("Error retrieving reservations:", error);
+              alert("Failed to retrieve reservations: " + error.message);
             });
-          }
         } else {
-          reservationsContainer.innerHTML = '<p>No reservations found.</p>';
+          console.log("No spaces found for the current renter.");
         }
-      }).catch((error) => {
-        console.error('Error retrieving reservations:', error);
-        alert('Failed to retrieve reservations: ' + error.message);
+      })
+      .catch((error) => {
+        console.error("Error retrieving rented spaces:", error);
+        alert("Failed to retrieve rented spaces: " + error.message);
       });
-    } else {
-      console.log('No spaces found for the current renter.');
-    }
-  }).catch((error) => {
-    console.error('Error retrieving rented spaces:', error);
-    alert('Failed to retrieve rented spaces: ' + error.message);
-  });
-}
+  }
 
+  // Function to edit a space
+  function editSpace(userUid, spaceId) {
+    // Get the current space details from Firebase
+    const spaceRef = dbRef(database, `renters/${userUid}/spaces/${spaceId}`);
+    get(spaceRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          // Populate the form fields with existing data
+          document.getElementById("space-id").value = spaceId;
+          document.getElementById("space-name").value =
+            snapshot.val().spaceName;
+          document.getElementById("location").value = snapshot.val().location;
+          document.getElementById("total-rooms").value =
+            snapshot.val().totalRooms;
+          document.getElementById("rented-rooms").value =
+            snapshot.val().rentedRooms;
+          document.getElementById("description").value =
+            snapshot.val().description;
 
+          // Change the form action to update
+          const form = document.getElementById("renter-registration-form");
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            registerSpace(e);
+          });
+        } else {
+          alert("Failed to load space details.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading space details:", error);
+        alert("Failed to load space details: " + error.message);
+      });
+  }
+
+  // Function to delete a space
+  function deleteSpace(userUid, spaceId) {
+    const spaceRef = dbRef(database, `renters/${userUid}/spaces/${spaceId}`);
+
+    // Delete the space
+    remove(spaceRef)
+      .then(() => {
+        alert("Space deleted successfully!");
+
+        // Delay the refresh by 100ms to ensure the alert is closed
+        setTimeout(() => {
+          displayRentedSpaces(); // Refresh the spaces list after deletion
+        }, 100);
+      })
+      .catch((error) => {
+        console.error("Error deleting space:", error);
+        alert("Failed to delete space: " + error.message);
+      });
+  }
 
   // Function to delete a reservation
-// Function to delete a reservation
-function deleteReservation(renteeUid, spaceId, timestamp) {
-  const reservationRef = ref(database, `reservations/${renteeUid}/${spaceId}/${timestamp}`);
+  function deleteReservation(renteeUid, spaceId, timestamp) {
+    const reservationRef = dbRef(
+      database,
+      `reservations/${renteeUid}/${spaceId}/${timestamp}`
+    );
 
-  // Delete the reservation
-  remove(reservationRef)
-    .then(() => {
-      alert("Reservation deleted successfully!");
-      
-      // Delay the refresh by 100ms to ensure the alert is closed
-      setTimeout(() => {
-        displayReservations(); // Refresh the reservation list after deletion
-      }, 100);
-      
-    })
-    .catch((error) => {
-      console.error("Error deleting reservation:", error);
-      alert("Failed to delete reservation: " + error.message);
-    });
-}
+    // Delete the reservation
+    remove(reservationRef)
+      .then(() => {
+        alert("Reservation deleted successfully!");
 
-
-
-
-
-
+        // Delay the refresh by 100ms to ensure the alert is closed
+        setTimeout(() => {
+          displayReservations(); // Refresh the reservation list after deletion
+        }, 100);
+      })
+      .catch((error) => {
+        console.error("Error deleting reservation:", error);
+        alert("Failed to delete reservation: " + error.message);
+      });
+  }
 </script>
-
-
 
 </html>

@@ -1,275 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Booked Rooms - Coworking Space</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: "Roboto", sans-serif;
-      margin: 0;
-      color: #e0e0e0;
-      background-color: #121212;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: #1a1a1a;
-      padding: 15px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    header nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-    }
-
-    header nav li {
-      margin-right: 20px;
-    }
-
-    header nav a {
-      color: #e0e0e0;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    header nav a:hover {
-      color: #ccc;
-    }
-
-    .booking-container {
-      background-color: #1f1f1f;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 600px;
-      margin: 50px auto;
-      text-align: center;
-    }
-
-    .booking-container h2 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      font-weight: 700;
-      color: #e0e0e0;
-    }
-
-    .bookings-list {
-      margin-top: 20px;
-      background-color: #2b2b2b;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    .bookings-list h4 {
-      font-weight: 500;
-      color: #e0e0e0;
-    }
-
-    .booking-item {
-      margin-bottom: 20px;
-      background-color: #3b3b3b;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-      text-align: left;
-    }
-
-    .booking-item p {
-      color: #e0e0e0;
-      margin: 5px 0;
-    }
-
-    .logout-button {
-      margin-top: 20px;
-      background-color: #dc3545;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .logout-button:hover {
-      background-color: #c82333;
-    }
-
-    .login-link {
-      margin-top: 20px;
-      color: #e0e0e0;
-    }
-
-    .login-link a {
-      color: #6c757d;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .login-link a:hover {
-      color: #5a6268;
-    }
-  </style>
-</head>
-
-<body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <div class="booking-container">
-    <h2>My Booked Rooms</h2>
-    <div id="bookings-list" class="bookings-list">
-      <!-- Bookings will be dynamically loaded here -->
-    </div>
-    <button class="logout-button" id="logout-button">Logout</button>
-    <div class="login-link">
-      Need help? <a href="contact.html">Contact us</a>
-    </div>
-  </div>
-</body>
-
-<script type="module">
-  // Import and configure Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut,
-  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
-
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-    authDomain: "capstone-52517.firebaseapp.com",
-    databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
-    projectId: "capstone-52517",
-    storageBucket: "capstone-52517.appspot.com",
-    messagingSenderId: "73406159561",
-    appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-    measurementId: "G-PGMLKNHSP2",
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const database = getDatabase(app);
-
-  // Check if the user is logged in and exists in the "users" node
-  document.addEventListener("DOMContentLoaded", function () {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userUid = user.uid;
-        displayBookedRooms(userUid);
-      } else {
-        // No user signed in, redirect to login
-        alert("Please log in first.");
-        window.location.href = "login.html";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booked Rooms - Coworking Space</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        color: #e0e0e0;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
       }
-    });
-  });
 
-  function displayBookedRooms(userUid) {
-  const userReservationsRef = ref(database, 'reservations/' + userUid); // Path to user's reservations
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
 
-  console.log('Fetching bookings for user:', userUid);
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
 
-  get(userReservationsRef).then((snapshot) => {
-    const bookingsList = document.getElementById('bookings-list');
-    bookingsList.innerHTML = ''; // Clear existing content
+      header nav li {
+        margin-right: 20px;
+      }
 
-    if (snapshot.exists()) {
-      const userReservations = snapshot.val();
-      console.log('User reservations:', userReservations); // Log user data for debugging
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
 
-      // Loop through each reservation for the user
-      for (const reservationKey in userReservations) {
-        const reservationData = userReservations[reservationKey]; // Get the nested reservation object
-        console.log('Reservation data for key:', reservationKey, reservationData); // Log reservation data
+      header nav a:hover {
+        color: #ccc;
+      }
 
-        // Now loop through the nested reservation data
-        for (const detailKey in reservationData) {
-          const bookingDetail = reservationData[detailKey]; // Access the actual reservation details
-          console.log('Booking details:', bookingDetail); // Log the booking details
+      .booking-container {
+        background-color: #1f1f1f;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 600px;
+        margin: 50px auto;
+        text-align: center;
+      }
 
-          // Create HTML structure for each booking
-          const bookingItem = document.createElement('div');
-          bookingItem.classList.add('booking-item');
+      .booking-container h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #e0e0e0;
+      }
 
-          const nameElem = document.createElement('p');
-          nameElem.textContent = `Name: ${bookingDetail.name !== undefined ? bookingDetail.name : 'N/A'}`;
+      .bookings-list {
+        margin-top: 20px;
+        background-color: #2b2b2b;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
 
-          const emailElem = document.createElement('p');
-          emailElem.textContent = `Email: ${bookingDetail.email !== undefined ? bookingDetail.email : 'N/A'}`;
+      .bookings-list h4 {
+        font-weight: 500;
+        color: #e0e0e0;
+      }
 
-          const phoneNumberElem = document.createElement('p');
-          phoneNumberElem.textContent = `Phone Number: ${bookingDetail.phoneNumber !== undefined ? bookingDetail.phoneNumber : 'N/A'}`;
+      .booking-item {
+        margin-bottom: 20px;
+        background-color: #3b3b3b;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        text-align: left;
+      }
 
-          const checkInDateElem = document.createElement('p');
-          checkInDateElem.textContent = `Check-in Date: ${bookingDetail.checkInDate !== undefined ? bookingDetail.checkInDate : 'N/A'}`;
+      .booking-item p {
+        color: #e0e0e0;
+        margin: 5px 0;
+      }
 
-          const checkOutDateElem = document.createElement('p');
-          checkOutDateElem.textContent = `Check-out Date: ${bookingDetail.checkOutDate !== undefined ? bookingDetail.checkOutDate : 'N/A'}`;
+      .logout-button {
+        margin-top: 20px;
+        background-color: #dc3545;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+      }
 
-          // Append the details to the booking item
-          bookingItem.appendChild(nameElem);
-          bookingItem.appendChild(emailElem);
-          bookingItem.appendChild(phoneNumberElem);
-          bookingItem.appendChild(checkInDateElem);
-          bookingItem.appendChild(checkOutDateElem);
+      .logout-button:hover {
+        background-color: #c82333;
+      }
 
-          // Append the booking item to the list
-          bookingsList.appendChild(bookingItem);
+      .login-link {
+        margin-top: 20px;
+        color: #e0e0e0;
+      }
+
+      .login-link a {
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .login-link a:hover {
+        color: #5a6268;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+        <button class="logout-button" onclick="logoutUser()">Logout</button>
+      </nav>
+    </header>
+
+    <div class="booking-container">
+      <h2>My Booked Rooms</h2>
+      <div id="bookings-list" class="bookings-list">
+        <!-- Bookings will be dynamically loaded here -->
+      </div>
+      <button class="logout-button" id="logout-button">Logout</button>
+      <div class="login-link">
+        Need help? <a href="contact.html">Contact us</a>
+      </div>
+    </div>
+  </body>
+
+  <script type="module">
+    // Import and configure Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+      authDomain: "capstone-52517.firebaseapp.com",
+      databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+      projectId: "capstone-52517",
+      storageBucket: "capstone-52517.appspot.com",
+      messagingSenderId: "73406159561",
+      appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+      measurementId: "G-PGMLKNHSP2",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Check if the user is logged in and exists in the "users" node
+    document.addEventListener("DOMContentLoaded", function () {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const userUid = user.uid;
+          displayBookedRooms(userUid);
+        } else {
+          // No user signed in, redirect to login
+          alert("Please log in first.");
+          window.location.href = "login.html";
         }
-      }
-    } else {
-      bookingsList.innerHTML = '<p>No booked rooms found.</p>';
-    }
-  }).catch((error) => {
-    console.error('Error retrieving user reservations:', error);
-    alert('Failed to retrieve user reservations: ' + error.message);
-  });
-}
-
-
-  // Logout button functionality
-  document.getElementById("logout-button").addEventListener("click", () => {
-    signOut(auth)
-      .then(() => {
-        alert("You have been logged out.");
-        window.location.href = "login.html";
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-        alert("Failed to log out: " + error.message);
       });
-  });
-</script>
+    });
 
+    function displayBookedRooms(userUid) {
+      const userReservationsRef = ref(database, "reservations/" + userUid); // Path to user's reservations
+
+      console.log("Fetching bookings for user:", userUid);
+
+      get(userReservationsRef)
+        .then((snapshot) => {
+          const bookingsList = document.getElementById("bookings-list");
+          bookingsList.innerHTML = ""; // Clear existing content
+
+          if (snapshot.exists()) {
+            const userReservations = snapshot.val();
+            console.log("User reservations:", userReservations); // Log user data for debugging
+
+            // Loop through each reservation for the user
+            for (const reservationKey in userReservations) {
+              const reservationData = userReservations[reservationKey]; // Get the nested reservation object
+              console.log(
+                "Reservation data for key:",
+                reservationKey,
+                reservationData
+              ); // Log reservation data
+
+              // Now loop through the nested reservation data
+              for (const detailKey in reservationData) {
+                const bookingDetail = reservationData[detailKey]; // Access the actual reservation details
+                console.log("Booking details:", bookingDetail); // Log the booking details
+
+                // Create HTML structure for each booking
+                const bookingItem = document.createElement("div");
+                bookingItem.classList.add("booking-item");
+
+                const nameElem = document.createElement("p");
+                nameElem.textContent = `Name: ${
+                  bookingDetail.name !== undefined ? bookingDetail.name : "N/A"
+                }`;
+
+                const emailElem = document.createElement("p");
+                emailElem.textContent = `Email: ${
+                  bookingDetail.email !== undefined
+                    ? bookingDetail.email
+                    : "N/A"
+                }`;
+
+                const phoneNumberElem = document.createElement("p");
+                phoneNumberElem.textContent = `Phone Number: ${
+                  bookingDetail.phoneNumber !== undefined
+                    ? bookingDetail.phoneNumber
+                    : "N/A"
+                }`;
+
+                const checkInDateElem = document.createElement("p");
+                checkInDateElem.textContent = `Check-in Date: ${
+                  bookingDetail.checkInDate !== undefined
+                    ? bookingDetail.checkInDate
+                    : "N/A"
+                }`;
+
+                const checkOutDateElem = document.createElement("p");
+                checkOutDateElem.textContent = `Check-out Date: ${
+                  bookingDetail.checkOutDate !== undefined
+                    ? bookingDetail.checkOutDate
+                    : "N/A"
+                }`;
+
+                // Append the details to the booking item
+                bookingItem.appendChild(nameElem);
+                bookingItem.appendChild(emailElem);
+                bookingItem.appendChild(phoneNumberElem);
+                bookingItem.appendChild(checkInDateElem);
+                bookingItem.appendChild(checkOutDateElem);
+
+                // Append the booking item to the list
+                bookingsList.appendChild(bookingItem);
+              }
+            }
+          } else {
+            bookingsList.innerHTML = "<p>No booked rooms found.</p>";
+          }
+        })
+        .catch((error) => {
+          console.error("Error retrieving user reservations:", error);
+          alert("Failed to retrieve user reservations: " + error.message);
+        });
+    }
+
+    // Logout button functionality
+    document.getElementById("logout-button").addEventListener("click", () => {
+      signOut(auth)
+        .then(() => {
+          alert("You have been logged out.");
+          window.location.href = "login.html";
+        })
+        .catch((error) => {
+          console.error("Error during logout:", error);
+          alert("Failed to log out: " + error.message);
+        });
+    });
+  </script>
 </html>

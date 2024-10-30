@@ -1,177 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Account</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            color: #e0e0e0;
-            background-color: #121212;
-        }
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        color: #e0e0e0;
+        background-color: #121212;
+      }
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #1c1c1c;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
+      .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #1c1c1c;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
 
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+      h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        button {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            font-size: 16px;
-        }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      button {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+      }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            background: #2b2b2b;
-            color: #e0e0e0;
-        }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        background: #2b2b2b;
+        color: #e0e0e0;
+      }
 
-        button {
-            background-color: #6c757d;
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
-        }
+      button {
+        background-color: #6c757d;
+        color: white;
+        cursor: pointer;
+        font-weight: 500;
+      }
 
-        button:hover {
-            background-color: #5a6268;
-        }
+      button:hover {
+        background-color: #5a6268;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
 
+    <header>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Register</a></li>
+          </ul>
+          <button class="logout-button" onclick="logoutUser()">Logout</button>
+        </nav>
+      </header>
     <div class="container">
-        <h1>Update Account Information</h1>
-        <form id="account-form">
-            <input type="text" id="name" placeholder="Name" required>
-            <input type="text" id="address" placeholder="Address" required>
-            <input type="text" id="mobile" placeholder="Mobile Number" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="current-password" placeholder="Current Password" required>
-            <input type="password" id="new-password" placeholder="New Password">
-            <button type="submit">Update</button>
-        </form>
+      <h1>Update Account Information</h1>
+      <form id="account-form">
+        <input type="text" id="name" placeholder="Name" required />
+        <input type="text" id="address" placeholder="Address" required />
+        <input type="text" id="mobile" placeholder="Mobile Number" required />
+        <input type="email" id="email" placeholder="Email" required />
+        <input
+          type="password"
+          id="current-password"
+          placeholder="Current Password"
+          required
+        />
+        <input type="password" id="new-password" placeholder="New Password" />
+        <button type="submit">Update</button>
+      </form>
     </div>
 
     <script type="module">
-        import { getAuth, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+      import {
+        getAuth,
+        updatePassword,
+        reauthenticateWithCredential,
+        EmailAuthProvider,
+      } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-            authDomain: "capstone-52517.firebaseapp.com",
-            projectId: "capstone-52517",
-            storageBucket: "capstone-52517.appspot.com",
-            messagingSenderId: "73406159561",
-            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-            measurementId: "G-PGMLKNHSP2"
-        };
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2",
+      };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const database = getDatabase(app);
 
-        // Get references to form fields
-        const nameInput = document.getElementById('name');
-        const addressInput = document.getElementById('address');
-        const mobileInput = document.getElementById('mobile');
-        const emailInput = document.getElementById('email');
-        const currentPasswordInput = document.getElementById('current-password');
-        const newPasswordInput = document.getElementById('new-password');
+      // Get references to form fields
+      const nameInput = document.getElementById("name");
+      const addressInput = document.getElementById("address");
+      const mobileInput = document.getElementById("mobile");
+      const emailInput = document.getElementById("email");
+      const currentPasswordInput = document.getElementById("current-password");
+      const newPasswordInput = document.getElementById("new-password");
 
-        // Check if user is logged in
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const userId = user.uid;
-                
-                // Fetch user details from Realtime Database
-                const userRef = ref(database, 'users/' + userId);
-                const snapshot = await get(userRef);
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    nameInput.value = userData.name || '';
-                    addressInput.value = userData.address || '';
-                    mobileInput.value = userData.mobile || '';
-                    emailInput.value = userData.email || '';
-                } else {
-                    console.error('No user data found.');
-                }
-            } else {
-                // Redirect to index if not logged in
-                window.location.href = 'index.html';
+      // Check if user is logged in
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          const userId = user.uid;
+
+          // Fetch user details from Realtime Database
+          const userRef = ref(database, "users/" + userId);
+          const snapshot = await get(userRef);
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            nameInput.value = userData.name || "";
+            addressInput.value = userData.address || "";
+            mobileInput.value = userData.mobile || "";
+            emailInput.value = userData.email || "";
+          } else {
+            console.error("No user data found.");
+          }
+        } else {
+          // Redirect to index if not logged in
+          window.location.href = "index.html";
+        }
+      });
+
+      // Handle form submission
+      document
+        .getElementById("account-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const user = auth.currentUser;
+          if (user) {
+            const userId = user.uid;
+            const name = nameInput.value;
+            const address = addressInput.value;
+            const mobile = mobileInput.value;
+            const email = emailInput.value;
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+
+            try {
+              // Update user details in Realtime Database
+              await set(ref(database, "users/" + userId), {
+                name: name,
+                address: address,
+                mobile: mobile,
+                email: email,
+              });
+
+              // Update email and password if provided
+              const credential = EmailAuthProvider.credential(
+                user.email,
+                currentPassword
+              );
+              await reauthenticateWithCredential(user, credential);
+
+              if (newPassword) {
+                await updatePassword(user, newPassword);
+              }
+
+              // Show success alert
+              alert("Account information updated successfully.");
+              window.location.href = "index.html"; // Redirect to index.html
+            } catch (error) {
+              console.error("Error updating account information: ", error);
+              alert("Error updating account information: " + error.message);
             }
-        });
-
-        // Handle form submission
-        document.getElementById('account-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const user = auth.currentUser;
-            if (user) {
-                const userId = user.uid;
-                const name = nameInput.value;
-                const address = addressInput.value;
-                const mobile = mobileInput.value;
-                const email = emailInput.value;
-                const currentPassword = currentPasswordInput.value;
-                const newPassword = newPasswordInput.value;
-
-                try {
-                    // Update user details in Realtime Database
-                    await set(ref(database, 'users/' + userId), {
-                        name: name,
-                        address: address,
-                        mobile: mobile,
-                        email: email
-                    });
-
-                    // Update email and password if provided
-                    const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                    await reauthenticateWithCredential(user, credential);
-                    
-                    if (newPassword) {
-                        await updatePassword(user, newPassword);
-                    }
-
-                    // Show success alert
-                    alert('Account information updated successfully.');
-                    window.location.href = 'index.html'; // Redirect to index.html
-                } catch (error) {
-                    console.error('Error updating account information: ', error);
-                    alert('Error updating account information: ' + error.message);
-                }
-            }
+          }
         });
     </script>
-
-</body>
+  </body>
 </html>

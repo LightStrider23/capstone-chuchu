@@ -1,294 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Available Spaces - Coworking Space</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            color: #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #121212;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-        header {
-            background-color: #1a1a1a;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
 
-        header nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
 
-        header nav li {
-            margin-right: 20px;
-        }
+      header nav li {
+        margin-right: 20px;
+      }
 
-        header nav a {
-            color: #e0e0e0;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
 
-        header nav a:hover {
-            color: #ccc;
-        }
+      header nav a:hover {
+        color: #ccc;
+      }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-        }
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .space-card {
-            background-color: #1f1f1f;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-        }
+      .space-card {
+        background-color: #1f1f1f;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+      }
 
-        .space-card h3 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
+      .space-card h3 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #fff;
+      }
 
-        .space-card p {
-            font-size: 16px;
-            margin: 5px 0;
-            color: #ccc;
-        }
+      .space-card p {
+        font-size: 16px;
+        margin: 5px 0;
+        color: #ccc;
+      }
 
-        .space-card .available {
-            font-size: 18px;
-            margin-top: 10px;
-            color: #6c757d;
-        }
+      .space-card .available {
+        font-size: 18px;
+        margin-top: 10px;
+        color: #6c757d;
+      }
 
-        .reserve-button {
-            margin-top: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-        }
+      .reserve-button {
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+      }
 
-        .reserve-button:hover {
-            background-color: #218838;
-        }
+      .reserve-button:hover {
+        background-color: #218838;
+      }
 
-        /* Modal overlay background */
-        .reservationform {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            /* Dark overlay */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            /* Ensures it appears above other elements */
-        }
+      /* Modal overlay background */
+      .reservationform {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        /* Dark overlay */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        /* Ensures it appears above other elements */
+      }
 
-        /* Modal content styling */
-        .modal-content {
-            background-color: #1f1f1f;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
-            width: 100%;
-            color: #e0e0e0;
-        }
+      /* Modal content styling */
+      .modal-content {
+        background-color: #1f1f1f;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        width: 100%;
+        color: #e0e0e0;
+      }
 
-        .modal-content h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #fff;
-        }
+      .modal-content h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #fff;
+      }
 
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-        }
+      .modal-content form {
+        display: flex;
+        flex-direction: column;
+      }
 
-        .modal-content label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: #ccc;
-        }
+      .modal-content label {
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #ccc;
+      }
 
-        .modal-content input {
-            margin-bottom: 10px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            background-color: #333;
-            color: #e0e0e0;
-        }
+      .modal-content input {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: #e0e0e0;
+      }
 
-        #submit-reservation,
-        #close-modal {
-            margin-top: 10px;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
+      #submit-reservation,
+      #close-modal {
+        margin-top: 10px;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
 
-        #submit-reservation:hover {
-            background-color: #218838;
-        }
+      #submit-reservation:hover {
+        background-color: #218838;
+      }
 
-        #close-modal {
-            background-color: #dc3545;
-            /* Red for cancel button */
-        }
+      #close-modal {
+        background-color: #dc3545;
+        /* Red for cancel button */
+      }
 
-        #close-modal:hover {
-            background-color: #c82333;
-        }
+      #close-modal:hover {
+        background-color: #c82333;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="booking.html">Bookings</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="booking.html">Bookings</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
     </header>
 
     <div class="container">
-        <h2>Available Spaces</h2>
-        <div id="spaces-list">
-            <!-- Spaces will be dynamically loaded here -->
-        </div>
+      <h2>Available Spaces</h2>
+      <div id="spaces-list">
+        <!-- Spaces will be dynamically loaded here -->
+      </div>
     </div>
 
-
-
     <script type="module">
-        // Import and configure Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+      // Import and configure Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2",
+      };
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-            authDomain: "capstone-52517.firebaseapp.com",
-            databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
-            projectId: "capstone-52517",
-            storageBucket: "capstone-52517.appspot.com",
-            messagingSenderId: "73406159561",
-            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-            measurementId: "G-PGMLKNHSP2"
-        };
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth(app);
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
+      // Check if user is logged in and exists in the rentees node
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const userUid = user.uid;
+          const renterRef = ref(database, "rentees/" + userUid);
 
-        // Check if user is logged in and exists in the rentees node
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userUid = user.uid;
-                const renterRef = ref(database, 'rentees/' + userUid);
+          get(renterRef)
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                // User exists in the rentees node, allow access to the page and load the available spaces
+                loadSpaces();
+              } else {
+                // User does not exist in the rentees node, redirect or display an error message
+                alert("You are not registered as a rentee.");
+                window.location.href = "index.html"; // Redirect to homepage or another page
+              }
+            })
+            .catch((error) => {
+              console.error("Error checking renter status:", error);
+            });
+        } else {
+          // No user is signed in, redirect to login or home page
+          alert("Please log in first.");
+          window.location.href = "login.html"; // Redirect to homepage or login page
+        }
+      });
 
-                get(renterRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        // User exists in the rentees node, allow access to the page and load the available spaces
-                        loadSpaces();
-                    } else {
-                        // User does not exist in the rentees node, redirect or display an error message
-                        alert('You are not registered as a renter.');
-                        window.location.href = 'index.html'; // Redirect to homepage or another page
-                    }
-                }).catch((error) => {
-                    console.error('Error checking renter status:', error);
-                });
-            } else {
-                // No user is signed in, redirect to login or home page
-                alert('Please log in first.');
-                window.location.href = 'login.html'; // Redirect to homepage or login page
-            }
-        });
+      // Function to load and display spaces
+      function loadSpaces() {
+        const spacesList = document.getElementById("spaces-list");
 
-        // Function to load and display spaces
-        function loadSpaces() {
-            const spacesList = document.getElementById('spaces-list');
+        // Reference to all spaces under every renter
+        const rentersRef = ref(database, "renters");
 
-            // Reference to all spaces under every renter
-            const rentersRef = ref(database, 'renters');
+        // Get data from Firebase
+        get(rentersRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const renters = snapshot.val();
 
-            // Get data from Firebase
-            get(rentersRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const renters = snapshot.val();
+              // Loop through all renters
+              Object.keys(renters).forEach((renterUid) => {
+                const spaces = renters[renterUid].spaces;
 
-                    // Loop through all renters
-                    Object.keys(renters).forEach(renterUid => {
-                        const spaces = renters[renterUid].spaces;
+                // Loop through spaces of each renter
+                if (spaces) {
+                  Object.keys(spaces).forEach((spaceKey) => {
+                    const space = spaces[spaceKey];
 
-                        // Loop through spaces of each renter
-                        if (spaces) {
-                            Object.keys(spaces).forEach(spaceKey => {
-                                const space = spaces[spaceKey];
+                    // Create space card
+                    const spaceCard = document.createElement("div");
+                    spaceCard.classList.add("space-card"); // Adding both 'space-card' and 'reservationform' classes
 
-                                // Create space card
-                                const spaceCard = document.createElement('div');
-                                spaceCard.classList.add('space-card',); // Adding both 'space-card' and 'reservationform' classes
-
-                                // Set inner content for the space card
-                                spaceCard.innerHTML = `
+                    // Set inner content for the space card
+                    spaceCard.innerHTML = `
               <h3>${space.spaceName}</h3>
               <p>Location: ${space.location}</p>
               <p>Total Rooms: ${space.totalRooms}</p>
@@ -298,30 +310,33 @@
               <button class="reserve-button">Reserve</button>
             `;
 
-                                // Add event listener to reserve button
-                                spaceCard.querySelector('.reserve-button').addEventListener('click', () => {
-                                    showReservationForm(spaceKey, space.spaceName);
-                                });
+                    // Add event listener to reserve button
+                    spaceCard
+                      .querySelector(".reserve-button")
+                      .addEventListener("click", () => {
+                        showReservationForm(spaceKey, space.spaceName);
+                      });
 
-                                // Append the space card to the list
-                                spacesList.appendChild(spaceCard);
-                            });
-                        }
-                    });
-                } else {
-                    spacesList.innerHTML = "<p>No spaces available at the moment.</p>";
+                    // Append the space card to the list
+                    spacesList.appendChild(spaceCard);
+                  });
                 }
-            }).catch((error) => {
-                console.error('Error retrieving spaces:', error);
-                spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
-            });
-        }
+              });
+            } else {
+              spacesList.innerHTML =
+                "<p>No spaces available at the moment.</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error retrieving spaces:", error);
+            spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
+          });
+      }
 
-        function showReservationForm(spaceKey, spaceName) {
-            
-    const reservationForm = document.createElement('div');
-    reservationForm.classList.add('reservationform'); // Add class here
-    reservationForm.innerHTML = `
+      function showReservationForm(spaceKey, spaceName) {
+        const reservationForm = document.createElement("div");
+        reservationForm.classList.add("reservationform"); // Add class here
+        reservationForm.innerHTML = `
         <div class="modal-content">
             <h2>Reserve ${spaceName}</h2>
             <form id="reservation-form">
@@ -343,64 +358,75 @@
         </div>
     `;
 
-    document.body.appendChild(reservationForm);
+        document.body.appendChild(reservationForm);
 
-    // Close modal logic
-    document.getElementById('close-modal').addEventListener('click', () => {
-        document.body.removeChild(reservationForm);
-    });
+        // Close modal logic
+        document.getElementById("close-modal").addEventListener("click", () => {
+          document.body.removeChild(reservationForm);
+        });
 
-    // Retrieve existing reservations from Firebase
-    const reservationRef = ref(database, 'reservations/' + auth.currentUser.uid + '/' + spaceKey);
-    get(reservationRef).then((snapshot) => {
-        const reservedDates = [];
+        // Retrieve existing reservations from Firebase
+        const reservationRef = ref(
+          database,
+          "reservations/" + auth.currentUser.uid + "/" + spaceKey
+        );
+        get(reservationRef)
+          .then((snapshot) => {
+            const reservedDates = [];
 
-        if (snapshot.exists()) {
-            const reservations = snapshot.val();
+            if (snapshot.exists()) {
+              const reservations = snapshot.val();
 
-            // Extract reserved date ranges from existing reservations
-            Object.values(reservations).forEach((reservation) => {
+              // Extract reserved date ranges from existing reservations
+              Object.values(reservations).forEach((reservation) => {
                 const checkInDate = new Date(reservation.checkInDate);
                 const checkOutDate = new Date(reservation.checkOutDate);
 
                 // Loop through each day in the reservation range and push to the reservedDates array
-                for (let date = checkInDate; date <= checkOutDate; date.setDate(date.getDate() + 1)) {
-                    reservedDates.push(new Date(date).setHours(0, 0, 0, 0)); // Normalize date
+                for (
+                  let date = checkInDate;
+                  date <= checkOutDate;
+                  date.setDate(date.getDate() + 1)
+                ) {
+                  reservedDates.push(new Date(date).setHours(0, 0, 0, 0)); // Normalize date
                 }
+              });
+            }
+
+            // Initialize flatpickr date pickers with disabled reserved dates
+            flatpickr("#checkInDate", {
+              altInput: true,
+              altFormat: "F j, Y",
+              dateFormat: "Y-m-d",
+              disable: reservedDates.map((date) => new Date(date)), // Convert to Date objects
             });
-        }
 
-        // Initialize flatpickr date pickers with disabled reserved dates
-        flatpickr("#checkInDate", {
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-            disable: reservedDates.map(date => new Date(date)), // Convert to Date objects
-        });
+            flatpickr("#checkOutDate", {
+              altInput: true,
+              altFormat: "F j, Y",
+              dateFormat: "Y-m-d",
+              disable: reservedDates.map((date) => new Date(date)),
+            });
+          })
+          .catch((error) => {
+            console.error("Error retrieving reservations:", error);
+          });
 
-        flatpickr("#checkOutDate", {
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-            disable: reservedDates.map(date => new Date(date)),
-        });
+        // Reservation form submission
+        document
+          .getElementById("submit-reservation")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phoneNumber = document.getElementById("phoneNumber").value;
+            const checkInDate = document.getElementById("checkInDate").value;
+            const checkOutDate = document.getElementById("checkOutDate").value;
 
-    }).catch((error) => {
-        console.error('Error retrieving reservations:', error);
-    });
-
-    // Reservation form submission
-    document.getElementById('submit-reservation').addEventListener('click', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phoneNumber = document.getElementById('phoneNumber').value;
-        const checkInDate = document.getElementById('checkInDate').value;
-        const checkOutDate = document.getElementById('checkOutDate').value;
-
-        // Mock payment logic
-        const paymentAmount = document.getElementById('paymentAmount').value;
-        const confirmationMessage = `
+            // Mock payment logic
+            const paymentAmount =
+              document.getElementById("paymentAmount").value;
+            const confirmationMessage = `
             Payment Confirmation:
             Name: ${name}
             Email: ${email}
@@ -409,63 +435,67 @@
             Check-out Date: ${checkOutDate}
             Total Amount Paid: $${paymentAmount}
         `;
-        alert(confirmationMessage); // Display the confirmation message as an alert
+            alert(confirmationMessage); // Display the confirmation message as an alert
 
-        // Retrieve current user's UID
-        const user = auth.currentUser;
-        if (!user) {
-            alert("User is not logged in.");
-            return;
-        }
-        const userUid = user.uid;
+            // Retrieve current user's UID
+            const user = auth.currentUser;
+            if (!user) {
+              alert("User is not logged in.");
+              return;
+            }
+            const userUid = user.uid;
 
-        // Send reservation data to Firebase under the path: 'reservations/{userUid}/{spaceKey}/{reservationRef}'
-        const userReservationRef = ref(database, `reservations/${userUid}/${spaceKey}`);
+            // Send reservation data to Firebase under the path: 'reservations/{userUid}/{spaceKey}/{reservationRef}'
+            const userReservationRef = ref(
+              database,
+              `reservations/${userUid}/${spaceKey}`
+            );
 
-        get(userReservationRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const reservations = snapshot.val();
-                set(userReservationRef, {
+            get(userReservationRef)
+              .then((snapshot) => {
+                if (snapshot.exists()) {
+                  const reservations = snapshot.val();
+                  set(userReservationRef, {
                     ...reservations,
                     [Date.now()]: {
-                        name: name,
-                        email: email,
-                        phoneNumber: phoneNumber,
-                        checkInDate: checkInDate,
-                        checkOutDate: checkOutDate,
+                      name: name,
+                      email: email,
+                      phoneNumber: phoneNumber,
+                      checkInDate: checkInDate,
+                      checkOutDate: checkOutDate,
                     },
-                }).then(() => {
-                    alert('Reservation successful!');
-                    document.body.removeChild(reservationForm);
-                }).catch((error) => {
-                    console.error('Error making reservation:', error);
-                });
-            } else {
-                set(userReservationRef, {
+                  })
+                    .then(() => {
+                      alert("Reservation successful!");
+                      document.body.removeChild(reservationForm);
+                    })
+                    .catch((error) => {
+                      console.error("Error making reservation:", error);
+                    });
+                } else {
+                  set(userReservationRef, {
                     [Date.now()]: {
-                        name: name,
-                        email: email,
-                        phoneNumber: phoneNumber,
-                        checkInDate: checkInDate,
-                        checkOutDate: checkOutDate,
+                      name: name,
+                      email: email,
+                      phoneNumber: phoneNumber,
+                      checkInDate: checkInDate,
+                      checkOutDate: checkOutDate,
                     },
-                }).then(() => {
-                    alert('Reservation successful!');
-                    document.body.removeChild(reservationForm);
-                }).catch((error) => {
-                    console.error('Error making reservation:', error);
-                });
-            }
-        }).catch((error) => {
-            console.error('Error retrieving reservations:', error);
-        });
-    });
-}
-
-
-
+                  })
+                    .then(() => {
+                      alert("Reservation successful!");
+                      document.body.removeChild(reservationForm);
+                    })
+                    .catch((error) => {
+                      console.error("Error making reservation:", error);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.error("Error retrieving reservations:", error);
+              });
+          });
+      }
     </script>
-
-</body>
-
+  </body>
 </html>

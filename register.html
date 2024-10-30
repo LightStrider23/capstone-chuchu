@@ -1,332 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - Coworking Space</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            color: #e0e0e0;
-            background-color: #121212;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        color: #e0e0e0;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-        header {
-            background-color: #1a1a1a;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
+      header {
+        background-color: #1a1a1a;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
 
-        header nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+      }
 
-        header nav li {
-            margin-right: 20px;
-        }
+      header nav li {
+        margin-right: 20px;
+      }
 
-        header nav a {
-            color: #e0e0e0;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+      header nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
 
-        header nav a:hover {
-            color: #ccc;
-        }
+      header nav a:hover {
+        color: #ccc;
+      }
 
-        .register-container {
-            background-color: #1f1f1f;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            margin: 50px auto;
-            text-align: center;
-        }
+      .register-container {
+        background-color: #1f1f1f;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 400px;
+        margin: 50px auto;
+        text-align: center;
+      }
 
-        .register-container h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            font-weight: 700;
-            color: #e0e0e0;
-        }
+      .register-container h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #e0e0e0;
+      }
 
-        .register-container form {
-            display: flex;
-            flex-direction: column;
-        }
+      .register-container form {
+        display: flex;
+        flex-direction: column;
+      }
 
-        .register-container input[type="text"],
-        .register-container input[type="email"],
-        .register-container input[type="password"] {
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            background-color: #2b2b2b;
-            color: #e0e0e0;
-            font-size: 16px;
-        }
+      .register-container input[type="text"],
+      .register-container input[type="email"],
+      .register-container input[type="password"] {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #333;
+        background-color: #2b2b2b;
+        color: #e0e0e0;
+        font-size: 16px;
+      }
 
-        .register-container input[type="text"]::placeholder,
-        .register-container input[type="email"]::placeholder,
-        .register-container input[type="password"]::placeholder {
-            color: #888;
-        }
+      .register-container input[type="text"]::placeholder,
+      .register-container input[type="email"]::placeholder,
+      .register-container input[type="password"]::placeholder {
+        color: #888;
+      }
 
-        .register-container input[type="submit"] {
-            background-color: #6c757d;
-            color: white;
-            padding: 12px 15px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-        }
+      .register-container input[type="submit"] {
+        background-color: #6c757d;
+        color: white;
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+      }
 
-        .register-container input[type="submit"]:hover {
-            background-color: #5a6268;
-        }
+      .register-container input[type="submit"]:hover {
+        background-color: #5a6268;
+      }
 
-        .register-container .login-link {
-            margin-top: 20px;
-            color: #e0e0e0;
-        }
+      .register-container .login-link {
+        margin-top: 20px;
+        color: #e0e0e0;
+      }
 
-        .register-container .login-link a {
-            color: #6c757d;
-            text-decoration: none;
-            font-weight: 500;
-        }
+      .register-container .login-link a {
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 500;
+      }
 
-        .register-container .login-link a:hover {
-            color: #5a6268;
-        }
+      .register-container .login-link a:hover {
+        color: #5a6268;
+      }
 
-        .fade {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
+      .fade {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
 
-        .fade.show {
-            opacity: 1;
-        }
+      .fade.show {
+        opacity: 1;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="login.html">Login</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </nav>
     </header>
 
     <div class="register-container">
-        <h2>Register</h2>
+      <h2>Register</h2>
 
-        <!-- Dropdown to toggle between Rentee and Renter -->
-        <label for="toggle-form">Select Registration Type:</label>
-        <select id="toggle-form">
-            <option value="rentee">Rentee</option>
-            <option value="renter">Renter</option>
-        </select>
+      <!-- Dropdown to toggle between Rentee and Renter -->
+      <label for="toggle-form">Select Registration Type:</label>
+      <select id="toggle-form">
+        <option value="rentee">Rentee</option>
+        <option value="renter">Renter</option>
+      </select>
 
-        <!-- Rentee Form -->
-        <div id="rentee-form" class="fade show">
-            <form id="rentee-register-form">
-                <input type="text" id="rentee-username" placeholder="Username" required>
-                <input type="email" id="rentee-email" placeholder="Email" required>
-                <input type="password" id="rentee-password" placeholder="Password" required>
-                <input type="password" id="rentee-confirm_password" placeholder="Confirm Password" required>
-                <input type="submit" value="Register as Rentee">
-            </form>
-        </div>
+      <!-- Rentee Form -->
+      <div id="rentee-form" class="fade show">
+        <form id="rentee-register-form">
+          <input
+            type="text"
+            id="rentee-username"
+            placeholder="Username"
+            required
+          />
+          <input type="email" id="rentee-email" placeholder="Email" required />
+          <input
+            type="password"
+            id="rentee-password"
+            placeholder="Password"
+            required
+          />
+          <input
+            type="password"
+            id="rentee-confirm_password"
+            placeholder="Confirm Password"
+            required
+          />
+          <input type="submit" value="Register as Rentee" />
+        </form>
+      </div>
 
-        <!-- Renter Form (Initially Hidden) -->
-        <div id="renter-form" class="fade" style="display:none;">
-            <form id="renter-register-form">
-                <input type="text" id="renter-username" placeholder="Username" required>
-                <input type="email" id="renter-email" placeholder="Email" required>
-                <input type="password" id="renter-password" placeholder="Password" required>
-                <input type="password" id="renter-confirm_password" placeholder="Confirm Password" required>
-                <input type="submit" value="Register as Renter">
-            </form>
-        </div>
+      <!-- Renter Form (Initially Hidden) -->
+      <div id="renter-form" class="fade" style="display: none">
+        <form id="renter-register-form">
+          <input
+            type="text"
+            id="renter-username"
+            placeholder="Username"
+            required
+          />
+          <input type="email" id="renter-email" placeholder="Email" required />
+          <input
+            type="password"
+            id="renter-password"
+            placeholder="Password"
+            required
+          />
+          <input
+            type="password"
+            id="renter-confirm_password"
+            placeholder="Confirm Password"
+            required
+          />
+          <input type="submit" value="Register as Renter" />
+        </form>
+      </div>
 
-        <div class="login-link">
-            Already have an account? <a href="login.html">Login</a>
-        </div>
+      <div class="login-link">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+      } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
-            authDomain: "capstone-52517.firebaseapp.com",
-            projectId: "capstone-52517",
-            storageBucket: "capstone-52517.appspot.com",
-            messagingSenderId: "73406159561",
-            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
-            measurementId: "G-PGMLKNHSP2",
-            databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com/" // Your Realtime Database URL
-        };
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2",
+        databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com/", // Your Realtime Database URL
+      };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const database = getDatabase(app);
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth();
+      const database = getDatabase(app);
 
-        // Toggle between Rentee and Renter forms
-        document.getElementById('toggle-form').addEventListener('change', function (event) {
-            const selectedForm = event.target.value;
-            if (selectedForm === 'rentee') {
-                document.getElementById('renter-form').style.display = 'none';
-                document.getElementById('rentee-form').style.display = 'block';
-            } else {
-                document.getElementById('rentee-form').style.display = 'none';
-                document.getElementById('renter-form').style.display = 'block';
-            }
+      // Toggle between Rentee and Renter forms
+      document
+        .getElementById("toggle-form")
+        .addEventListener("change", function (event) {
+          const selectedForm = event.target.value;
+          if (selectedForm === "rentee") {
+            document.getElementById("renter-form").style.display = "none";
+            document.getElementById("rentee-form").style.display = "block";
+          } else {
+            document.getElementById("rentee-form").style.display = "none";
+            document.getElementById("renter-form").style.display = "block";
+          }
         });
 
-        // Rentee Registration
-        document.getElementById('rentee-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+      // Rentee Registration
+      document
+        .getElementById("rentee-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
-            const username = document.getElementById('rentee-username').value;
-            const email = document.getElementById('rentee-email').value;
-            const password = document.getElementById('rentee-password').value;
+          const username = document.getElementById("rentee-username").value;
+          const email = document.getElementById("rentee-email").value;
+          const password = document.getElementById("rentee-password").value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
 
-                    // Structure to save Rentee data
-                    const renteeData = {
-                        username: username,
-                        email: email,
-                        type: 'rentee',
-                        createdAt: new Date().toISOString()
-                    };
+              // Structure to save Rentee data
+              const renteeData = {
+                username: username,
+                email: email,
+                type: "rentee",
+                createdAt: new Date().toISOString(),
+              };
 
-                    // Save Rentee data in the database
-                    set(ref(database, 'rentees/' + user.uid), renteeData)
-                        .then(() => {
-                            alert('Rentee registered successfully! Click OK to sign out.');
-                            signOut(auth).then(() => {
-                                window.location.href = 'index.html'; // Redirect to the homepage after signing out
-                            }).catch((error) => {
-                                console.error('Error signing out:', error);
-                            });
-                        })
-                        .catch((error) => {
-                            console.error('Error storing rentee data:', error);
-                            alert('Failed to store rentee data: ' + error.message);
-                        });
+              // Save Rentee data in the database
+              set(ref(database, "rentees/" + user.uid), renteeData)
+                .then(() => {
+                  alert(
+                    "Rentee registered successfully! Click OK to sign out."
+                  );
+                  signOut(auth)
+                    .then(() => {
+                      window.location.href = "index.html"; // Redirect to the homepage after signing out
+                    })
+                    .catch((error) => {
+                      console.error("Error signing out:", error);
+                    });
                 })
                 .catch((error) => {
-                    console.error('Error during rentee registration:', error);
-                    alert('Rentee registration failed: ' + error.message);
+                  console.error("Error storing rentee data:", error);
+                  alert("Failed to store rentee data: " + error.message);
                 });
+            })
+            .catch((error) => {
+              console.error("Error during rentee registration:", error);
+              alert("Rentee registration failed: " + error.message);
+            });
         });
 
-        // Renter Registration
-        document.getElementById('renter-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+      // Renter Registration
+      document
+        .getElementById("renter-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
-            const username = document.getElementById('renter-username').value;
-            const email = document.getElementById('renter-email').value;
-            const password = document.getElementById('renter-password').value;
+          const username = document.getElementById("renter-username").value;
+          const email = document.getElementById("renter-email").value;
+          const password = document.getElementById("renter-password").value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
 
-                    // Structure to save Renter data
-                    const renterData = {
-                        username: username,
-                        email: email,
-                        type: 'renter',
-                        createdAt: new Date().toISOString()
-                    };
+              // Structure to save Renter data
+              const renterData = {
+                username: username,
+                email: email,
+                type: "renter",
+                createdAt: new Date().toISOString(),
+              };
 
-                    // Save Renter data in the database
-                    set(ref(database, 'renters/' + user.uid), renterData)
-                        .then(() => {
-                            alert('Renter registered successfully!');
-                            signOut(auth).then(() => {
-                                window.location.href = 'index.html'; // Redirect to the homepage after signing out
-                            }).catch((error) => {
-                                console.error('Error signing out:', error);
-                            });
-                        })
-                        .catch((error) => {
-                            console.error('Error storing renter data:', error);
-                            alert('Failed to store renter data: ' + error.message);
-                        });
+              // Save Renter data in the database
+              set(ref(database, "renters/" + user.uid), renterData)
+                .then(() => {
+                  alert("Renter registered successfully!");
+                  signOut(auth)
+                    .then(() => {
+                      window.location.href = "index.html"; // Redirect to the homepage after signing out
+                    })
+                    .catch((error) => {
+                      console.error("Error signing out:", error);
+                    });
                 })
                 .catch((error) => {
-                    console.error('Error during renter registration:', error);
-                    alert('Renter registration failed: ' + error.message);
+                  console.error("Error storing renter data:", error);
+                  alert("Failed to store renter data: " + error.message);
                 });
+            })
+            .catch((error) => {
+              console.error("Error during renter registration:", error);
+              alert("Renter registration failed: " + error.message);
+            });
         });
 
-        document.getElementById('toggle-form').addEventListener('change', function () {
-            const renteeForm = document.getElementById('rentee-form');
-            const renterForm = document.getElementById('renter-form');
+      document
+        .getElementById("toggle-form")
+        .addEventListener("change", function () {
+          const renteeForm = document.getElementById("rentee-form");
+          const renterForm = document.getElementById("renter-form");
 
-            // Fade out the current form
-            if (renteeForm.classList.contains('show')) {
-                renteeForm.classList.remove('show');
-                setTimeout(() => {
-                    renteeForm.style.display = 'none';
-                    renterForm.style.display = 'block';
-                    renterForm.classList.add('show');
-                }, 500); // Wait for fade-out transition to finish
-            } else {
-                renterForm.classList.remove('show');
-                setTimeout(() => {
-                    renterForm.style.display = 'none';
-                    renteeForm.style.display = 'block';
-                    renteeForm.classList.add('show');
-                }, 500); // Wait for fade-out transition to finish
-            }
+          // Fade out the current form
+          if (renteeForm.classList.contains("show")) {
+            renteeForm.classList.remove("show");
+            setTimeout(() => {
+              renteeForm.style.display = "none";
+              renterForm.style.display = "block";
+              renterForm.classList.add("show");
+            }, 500); // Wait for fade-out transition to finish
+          } else {
+            renterForm.classList.remove("show");
+            setTimeout(() => {
+              renterForm.style.display = "none";
+              renteeForm.style.display = "block";
+              renteeForm.classList.add("show");
+            }, 500); // Wait for fade-out transition to finish
+          }
         });
     </script>
-
-
-
-
-
-
-</body>
-
+  </body>
 </html>
