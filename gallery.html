@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Gallery</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* Cozy black-themed CSS */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #gallery {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .space-item {
+            position: relative;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 8px;
+        }
+
+        .space-item img {
+            width: 100%;
+            height: auto;
+            opacity: 0.8; /* Background image opacity */
+            border-radius: 8px;
+        }
+
+        .info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            color: #f5f5f5;
+            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay for text readability */
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .info h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        .reserve-button {
+            background-color: #4CAF50;
+            color: #f5f5f5;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .reserve-button:hover {
+            background-color: #45a049;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .nav-button {
+            background-color: #333;
+            color: #f5f5f5;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="account.html">Account</a></li>
+            <li><a href="booking.html">Booking</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Register</a></li>
+          </ul>
+          <button class="logout-button" onclick="logoutUser()">Logout</button>
+        </nav>
+      </header>
+    <h1>Space Gallery</h1>
+    <div id="gallery"></div>
+    <div class="nav-buttons">
+        <button class="nav-button" id="prevButton">Previous</button>
+        <button class="nav-button" id="nextButton">Next</button>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+            authDomain: "capstone-52517.firebaseapp.com",
+            databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+            projectId: "capstone-52517",
+            storageBucket: "capstone-52517.appspot.com",
+            messagingSenderId: "73406159561",
+            appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+            measurementId: "G-PGMLKNHSP2",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        let spacesArray = []; // Array to hold spaces for navigation
+        let currentIndex = 0; // Current index for space display
+
+        function loadGallery() {
+            const gallery = document.getElementById("gallery");
+
+            // Reference to all spaces under every renter
+            const rentersRef = ref(database, "renters");
+
+            // Get data from Firebase
+            get(rentersRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const renters = snapshot.val();
+
+                        // Loop through all renters
+                        Object.keys(renters).forEach((renterUid) => {
+                            const spaces = renters[renterUid].spaces;
+
+                            // Loop through spaces of each renter
+                            if (spaces) {
+                                Object.keys(spaces).forEach((spaceKey) => {
+                                    const space = spaces[spaceKey];
+                                    spacesArray.push(space); // Add space to the array for later use
+                                });
+                            }
+                        });
+
+                        // Load the first space
+                        loadSpace(currentIndex);
+
+                        // Add event listeners for navigation buttons
+                        document.getElementById("prevButton").addEventListener("click", showPrevious);
+                        document.getElementById("nextButton").addEventListener("click", showNext);
+
+                        // Auto transition every 5 seconds
+                        setInterval(showNext, 5000);
+                    } else {
+                        gallery.innerHTML = "<p>No spaces available at the moment.</p>";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error retrieving spaces:", error);
+                    gallery.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
+                });
+        }
+
+        function loadSpace(index) {
+            const gallery = document.getElementById("gallery");
+            gallery.innerHTML = ""; // Clear current content
+
+            const space = spacesArray[index];
+            const spaceItem = document.createElement("div");
+            spaceItem.classList.add("space-item");
+
+            spaceItem.innerHTML = `
+                <img src="${space.imageUrl}" alt="Space Image">
+                <div class="info">
+                    <h3>${space.spaceName}</h3>
+                    <p>Location: ${space.location}</p>
+                    <p>Total Rooms: ${space.totalRooms}</p>
+                    <p>Rented Rooms: ${space.rentedRooms}</p>
+                    <p>Available Rooms: ${space.availableRooms}</p>
+                    <p>Description: ${space.description}</p>
+                    <button class="reserve-button" onclick="window.location.href='rentee.html'">Reserve</button>
+                </div>
+            `;
+            gallery.appendChild(spaceItem);
+
+            // Trigger fade-in effect for the space item
+            setTimeout(() => {
+                spaceItem.style.opacity = "1";
+            }, 100);
+        }
+
+        function showPrevious() {
+            const gallery = document.getElementById("gallery");
+            const currentSpace = gallery.querySelector(".space-item");
+            currentSpace.style.opacity = "0"; // Fade out
+
+            currentIndex = (currentIndex - 1 + spacesArray.length) % spacesArray.length;
+
+            // Load the new space after fade out
+            setTimeout(() => {
+                loadSpace(currentIndex);
+            }, 500); // Match duration with the CSS transition time
+        }
+
+        function showNext() {
+            const gallery = document.getElementById("gallery");
+            const currentSpace = gallery.querySelector(".space-item");
+            currentSpace.style.opacity = "0"; // Fade out
+
+            currentIndex = (currentIndex + 1) % spacesArray.length;
+
+            // Load the new space after fade out
+            setTimeout(() => {
+                loadSpace(currentIndex);
+            }, 500); // Match duration with the CSS transition time
+        }
+
+        // Call the function to load the gallery
+        loadGallery();
+    </script>
+</body>
+</html>

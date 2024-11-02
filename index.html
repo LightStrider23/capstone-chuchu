@@ -200,56 +200,58 @@
 
       // Function to load and display spaces
       function loadSpaces() {
-        const spacesList = document.getElementById("spaces-list");
+  const spacesList = document.getElementById("spaces-list");
 
-        // Reference to all spaces under every renter
-        const rentersRef = ref(database, "renters");
+  // Reference to all spaces under every renter
+  const rentersRef = ref(database, "renters");
 
-        // Get data from Firebase
-        get(rentersRef)
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              const renters = snapshot.val();
+  // Get data from Firebase
+  get(rentersRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const renters = snapshot.val();
 
-              // Loop through all renters
-              Object.keys(renters).forEach((renterUid) => {
-                const spaces = renters[renterUid].spaces;
+        // Loop through all renters
+        Object.keys(renters).forEach((renterUid) => {
+          const spaces = renters[renterUid].spaces;
 
-                // Loop through spaces of each renter
-                if (spaces) {
-                  Object.keys(spaces).forEach((spaceKey) => {
-                    const space = spaces[spaceKey];
+          // Loop through spaces of each renter
+          if (spaces) {
+            Object.keys(spaces).forEach((spaceKey) => {
+              const space = spaces[spaceKey];
 
-                    // Create space card
-                    const spaceCard = document.createElement("div");
-                    spaceCard.classList.add("space-card");
+              // Create space card
+              const spaceCard = document.createElement("div");
+              spaceCard.classList.add("space-card");
 
-                    // Set inner content for the space card
-                    spaceCard.innerHTML = `
-                            <h3>${space.spaceName}</h3>
-                            <p>Location: ${space.location}</p>
-                            <p>Total Rooms: ${space.totalRooms}</p>
-                            <p>Rented Rooms: ${space.rentedRooms}</p>
-                            <p class="available">Available Rooms: ${space.availableRooms}</p>
-                            <p>Description: ${space.description}</p>
-                            <button class="reserve-button" onclick="window.location.href='rentee.html'">Reserve</button>
-                        `;
+              // Set inner content for the space card, including image
+              spaceCard.innerHTML = `
+                <img src="${space.imageUrl}" alt="Space Image" style="width: 100%; height: auto; border-radius: 5px;">
+                <h3>${space.spaceName}</h3>
+                <p>Location: ${space.location}</p>
+                <p>Total Rooms: ${space.totalRooms}</p>
+                <p>Rented Rooms: ${space.rentedRooms}</p>
+                <p class="available">Available Rooms: ${space.availableRooms}</p>
+                <p>Description: ${space.description}</p>
+                <button class="reserve-button" onclick="window.location.href='rentee.html'">Reserve</button>
+              `;
 
-                    // Append the space card to the list
-                    spacesList.appendChild(spaceCard);
-                  });
-                }
-              });
-            } else {
-              spacesList.innerHTML =
-                "<p>No spaces available at the moment.</p>";
-            }
-          })
-          .catch((error) => {
-            console.error("Error retrieving spaces:", error);
-            spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
-          });
+              // Append the space card to the list
+              spacesList.appendChild(spaceCard);
+            });
+          }
+        });
+      } else {
+        spacesList.innerHTML = "<p>No spaces available at the moment.</p>";
       }
+    })
+    .catch((error) => {
+      console.error("Error retrieving spaces:", error);
+      spacesList.innerHTML = `<p>Error loading spaces: ${error.message}</p>`;
+    });
+}
+
+
 
       // Load spaces when the page loads
       window.onload = () => {
@@ -268,6 +270,9 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="services.html">Services</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="account.html">Account</a></li>
+          <li><a href="booking.html">Booking</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="login.html">Login</a></li>
           <li><a href="register.html">Register</a></li>
