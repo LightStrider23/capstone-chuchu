@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chat</title>
+        <style>
+			/* General Styles */
+			body,
+			html {
+				margin: 0;
+				padding: 0;
+				font-family: Arial, sans-serif;
+				background-color: #121212;
+				color: #e0e0e0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			#chat-container {
+				background-color: #1e1e1e;
+				border-radius: 8px;
+				padding: 20px;
+				width: 90%;
+				max-width: 500px;
+				box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+			}
+
+			h2 {
+				font-size: 1.5em;
+				color: #ffb74d;
+				margin-bottom: 16px;
+				text-align: center;
+			}
+
+			#rentee-chat,
+			#renter-chat {
+				background-color: #2a2a2a;
+				padding: 15px;
+				border-radius: 8px;
+				max-height: 400px;
+				overflow-y: auto;
+			}
+
+			p {
+				font-size: 1em;
+				line-height: 1.5;
+			}
+
+			.message-input {
+				display: flex;
+				margin-top: 16px;
+			}
+
+			.message-input input {
+				flex: 1;
+				padding: 10px;
+				border: none;
+				border-radius: 4px;
+				background-color: #333;
+				color: #e0e0e0;
+			}
+
+			.message-input button {
+				padding: 10px 15px;
+				border: none;
+				background-color: #ffb74d;
+				color: #1e1e1e;
+				border-radius: 4px;
+				cursor: pointer;
+				margin-left: 8px;
+			}
+
+			.message-input button:hover {
+				background-color: #ffa726;
+			}
+		</style>
+		<script type="module">
+            // Import Firebase SDK
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+            import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+            import { getDatabase, ref, get, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+        
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+                authDomain: "capstone-52517.firebaseapp.com",
+                databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+                projectId: "capstone-52517",
+                storageBucket: "capstone-52517.appspot.com",
+                messagingSenderId: "73406159561",
+                appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+                measurementId: "G-PGMLKNHSP2",
+            };
+        
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const database = getDatabase(app);
+        
+            let currentUserType = null;
+            let currentUserId = null;
+            let selectedChatUserId = null;
+        
+            // Utility function to generate a unique conversation ID based on user IDs
+            function getConversationId(userId1, userId2) {
+                const sortedIds = [userId1, userId2].sort();
+                return `conversation_${sortedIds[0]}_${sortedIds[1]}`;
+            }
+        
+            // Function to display the appropriate chat UI
+            function showChatUI(userType) {
+                currentUserType = userType;
+                const chatContainer = document.getElementById("chat-container");
+                chatContainer.innerHTML = ""; // Clear previous UI
+        
+                if (userType === "rentee") {
+                    chatContainer.innerHTML = `
+                        <h2>Rentee Chat</h2>
+                        <select id="user-select">
+                            <option value="">Select Renter to Chat</option>
+                        </select>
+                        <div id="rentee-chat">
+                            <p>Select a renter to start chatting...</p>
+                        </div>
+                        <div class="message-input">
+                            <input type="text" id="message-input" placeholder="Type a message...">
+                            <button id="send-button">Send</button>
+                        </div>
+                    `;
+        
+                    // Populate dropdown with renters
+                    loadUsers("renters");
+                } else if (userType === "renter") {
+                    chatContainer.innerHTML = `
+                        <h2>Renter Chat</h2>
+                        <select id="user-select">
+                            <option value="">Select Rentee to Chat</option>
+                        </select>
+                        <div id="renter-chat">
+                            <p>Select a rentee to start chatting...</p>
+                        </div>
+                        <div class="message-input">
+                            <input type="text" id="message-input" placeholder="Type a message...">
+                            <button id="send-button">Send</button>
+                        </div>
+                    `;
+        
+                    // Populate dropdown with rentees
+                    loadUsers("rentees");
+                } else {
+                    chatContainer.innerHTML = "<p>Error: User type not recognized.</p>";
+                }
+        
+                // Attach event listener to the send button after rendering
+                document.getElementById("send-button").addEventListener("click", sendMessage);
+            }
+        
+            // Load users (renters or rentees) into the dropdown
+            function loadUsers(userType) {
+                const userSelect = document.getElementById("user-select");
+                const usersRef = ref(database, userType);
+        
+                get(usersRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const users = snapshot.val();
+                        for (const userId in users) {
+                            const option = document.createElement("option");
+                            option.value = userId;
+                            option.textContent = users[userId].username || `Unnamed ${userType.slice(0, -1)}`;
+                            userSelect.appendChild(option);
+                        }
+        
+                        // Listen for dropdown change
+                        userSelect.addEventListener("change", (event) => {
+                            selectedChatUserId = event.target.value;
+                            loadChatMessages();
+                        });
+                    } else {
+                        console.error(`No ${userType} found`);
+                    }
+                });
+            }
+        
+            // Load chat messages between the current user and the selected user
+            function loadChatMessages() {
+                const chatBox = document.getElementById(currentUserType === "rentee" ? "rentee-chat" : "renter-chat");
+                chatBox.innerHTML = "<p>Loading chat...</p>";
+        
+                if (selectedChatUserId) {
+                    const conversationId = getConversationId(currentUserId, selectedChatUserId);
+                    const chatRef = ref(database, `chat/${conversationId}`);
+                    
+                    // Listen for real-time updates to messages
+                    onValue(chatRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            const messages = snapshot.val();
+                            chatBox.innerHTML = ""; // Clear the chat box before displaying messages
+        
+                            // Loop through each message and display it
+                            for (const messageId in messages) {
+                                const message = messages[messageId];
+                                const messageElement = document.createElement("p");
+                                messageElement.textContent = `${message.sender}: ${message.text}`;
+                                chatBox.appendChild(messageElement);
+                            }
+                        } else {
+                            chatBox.innerHTML = "<p>No messages yet. Start chatting!</p>";
+                        }
+                    });
+                }
+            }
+        
+            // Send a message within the shared conversation
+            function sendMessage() {
+                const messageInput = document.getElementById("message-input");
+                const messageText = messageInput.value.trim();
+        
+                if (messageText && selectedChatUserId) {
+                    const conversationId = getConversationId(currentUserId, selectedChatUserId);
+                    const chatRef = ref(database, `chat/${conversationId}`);
+                    const newMessageRef = push(chatRef);
+        
+                    // Save the message
+                    set(newMessageRef, {
+                        sender: currentUserType === "rentee" ? "Rentee" : "Renter",
+                        text: messageText,
+                        timestamp: new Date().toISOString(),
+                    })
+                    .then(() => {
+                        messageInput.value = ""; // Clear input after sending
+                        // No need to call loadChatMessages() here; it's already handled by onValue listener
+                    })
+                    .catch((error) => {
+                        console.error("Error sending message:", error);
+                    });
+                }
+            }
+        
+            // Check if the user exists in the database and determine their type
+            function checkUserType(uid) {
+                currentUserId = uid;
+                const renteeRef = ref(database, `rentees/${uid}`);
+                const renterRef = ref(database, `renters/${uid}`);
+        
+                // Check if the user is a rentee
+                get(renteeRef)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            showChatUI("rentee");
+                        } else {
+                            // Check if the user is a renter
+                            get(renterRef).then((snapshot) => {
+                                if (snapshot.exists()) {
+                                    showChatUI("renter");
+                                } else {
+                                    document.getElementById("chat-container").innerHTML = "<p>User type not found.</p>";
+                                }
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error checking user type:", error);
+                    });
+            }
+        
+            // Monitor the authentication state
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in, get their UID and check their type
+                    checkUserType(user.uid);
+                } else {
+                    // User is not signed in
+                    alert("You are not logged in. Please log in to access chat.");
+                    window.location.href = "login.html"; // Redirect to login page
+                }
+            });
+        </script>
+        
+        
+        
+	</head>
+	<body>
+		<div id="chat-container">
+			<p>Loading chat...</p>
+		</div>
+	</body>
+</html>
