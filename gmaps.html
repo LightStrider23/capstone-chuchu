@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Add Map</title>
+    <style>
+      /* Set the size of the map container */
+      #map {
+        height: 90vh;
+        width: 100%;
+      }
+    </style>
+    <script type="module">
+      // Import Firebase SDK
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC2yTZIFLVONn4pdS0KOgJMuVw91ikNEY0",
+        authDomain: "capstone-52517.firebaseapp.com",
+        databaseURL: "https://capstone-52517-default-rtdb.firebaseio.com",
+        projectId: "capstone-52517",
+        storageBucket: "capstone-52517.appspot.com",
+        messagingSenderId: "73406159561",
+        appId: "1:73406159561:web:b7fa83821b4272e9be4b18",
+        measurementId: "G-PGMLKNHSP2",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Initialize the map
+      let map;
+      let geocoder;
+
+      // Define initMap as a global function
+      window.initMap = function() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 14.5995, lng: 120.9842 }, // Centered on Manila
+          zoom: 12,
+        });
+
+        geocoder = new google.maps.Geocoder();
+
+        // Load locations from Firebase and add markers
+        loadLocations();
+      }
+
+      function loadLocations() {
+        const rentersRef = ref(database, "renters");
+
+        onValue(rentersRef, (snapshot) => {
+          const renters = snapshot.val();
+          for (const renterId in renters) {
+            const spaces = renters[renterId].spaces;
+            for (const spaceId in spaces) {
+              const location = spaces[spaceId].location;
+              const spaceName = spaces[spaceId].spaceName;
+              addMarkerForLocation(location, spaceName);
+            }
+          }
+        });
+      }
+
+      function addMarkerForLocation(address, spaceName) {
+        geocoder.geocode({ address: address }, (results, status) => {
+          if (status === "OK") {
+            const position = results[0].geometry.location;
+
+            // Create the marker using google.maps.Marker
+            const marker = new google.maps.Marker({
+              map: map,
+              position: position,
+              title: spaceName,
+            });
+
+            // Create content for the info window with a "View" button
+            const infoWindowContent = `
+              <div>
+                <h4>${spaceName}</h4>
+                <p>${address}</p>
+                <button onclick="openDirections('${encodeURIComponent(address)}')">View</button>
+              </div>
+            `;
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: infoWindowContent,
+            });
+
+            // Open info window on marker click
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker);
+            });
+          } else {
+            console.error("Geocode error for the following address:", address, "Status:", status);
+          }
+        });
+      }
+
+      // Open directions to the address in a new tab
+      window.openDirections = function(destination) {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+        window.open(url, "_blank");
+      };
+    </script>
+  </head>
+  <body>
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+
+    <!-- Load Google Maps API with defer attribute -->
+    <script defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj6mCek3oaG3kfJfvmWiBM3B8CNDuQAOc&callback=initMap">
+    </script>
+  </body>
+</html>
