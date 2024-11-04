@@ -148,7 +148,9 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="services.html">Services</a></li>
+        <li><a href="chat.html">Chat</a></li>
         <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="gmaps.html">Maps</a></li>
         <li><a href="account.html">Account</a></li>
         <li><a href="booking.html">Booking</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -473,15 +475,13 @@ function uploadImage(file, userUid, spaceId) {
           const reservationsRef = dbRef(database, "reservations");
           get(reservationsRef)
             .then((snapshot) => {
-              const reservationsContainer = document.getElementById(
-                "reserved-users-list"
-              );
+              const reservationsContainer = document.getElementById("reserved-users-list");
               reservationsContainer.innerHTML = ""; // Clear existing content
 
               if (snapshot.exists()) {
                 const reservationsData = snapshot.val();
 
-                // Iterate over all rentees in the reservations
+                // Iterate over each rentee in the reservations
                 for (const renteeUid in reservationsData) {
                   const renteeReservations = reservationsData[renteeUid];
 
@@ -489,11 +489,11 @@ function uploadImage(file, userUid, spaceId) {
                   rentedSpaceIds.forEach((spaceId) => {
                     if (renteeReservations[spaceId]) {
                       const spaceReservations = renteeReservations[spaceId];
+                      const spaceName = spacesData[spaceId].spaceName; // Get the space name
 
-                      // Iterate over the reservation IDs within this space
+                      // Iterate over the reservation timestamps within this space
                       for (const reservationId in spaceReservations) {
-                        const reservationDetails =
-                          spaceReservations[reservationId];
+                        const reservationDetails = spaceReservations[reservationId];
 
                         // Create a div for each reservation
                         const reservationDiv = document.createElement("div");
@@ -502,10 +502,13 @@ function uploadImage(file, userUid, spaceId) {
                         reservationDiv.style.marginBottom = "15px";
                         reservationDiv.style.backgroundColor = "#2b2b2b";
                         reservationDiv.style.borderRadius = "5px";
-                        reservationDiv.style.boxShadow =
-                          "0 2px 5px rgba(0, 0, 0, 0.5)";
+                        reservationDiv.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.5)";
 
-                        // Accessing properties correctly
+                        // Display the space name
+                        const spaceNameElem = document.createElement("h3");
+                        spaceNameElem.textContent = `Space: ${spaceName}`;
+                        spaceNameElem.style.color = "#e0e0e0";
+
                         const nameElem = document.createElement("h3");
                         nameElem.textContent = `Name: ${reservationDetails.name}`;
                         nameElem.style.color = "#e0e0e0";
@@ -539,14 +542,11 @@ function uploadImage(file, userUid, spaceId) {
 
                         // Add event listener to delete the specific reservation
                         deleteButton.addEventListener("click", () => {
-                          deleteReservation(
-                            renteeUid,
-                            spaceId,
-                            reservationId
-                          );
+                          deleteReservation(renteeUid, spaceId, reservationId);
                         });
 
                         // Append all elements to the reservation div
+                        reservationDiv.appendChild(spaceNameElem);
                         reservationDiv.appendChild(nameElem);
                         reservationDiv.appendChild(emailElem);
                         reservationDiv.appendChild(phoneNumberElem);
@@ -561,8 +561,7 @@ function uploadImage(file, userUid, spaceId) {
                   });
                 }
               } else {
-                reservationsContainer.innerHTML =
-                  "<p>No reservations found.</p>";
+                reservationsContainer.innerHTML = "<p>No reservations found.</p>";
               }
             })
             .catch((error) => {
@@ -577,7 +576,9 @@ function uploadImage(file, userUid, spaceId) {
         console.error("Error retrieving rented spaces:", error);
         alert("Failed to retrieve rented spaces: " + error.message);
       });
-  }
+}
+
+
 
   // Function to edit a space
   function editSpace(userUid, spaceId) {

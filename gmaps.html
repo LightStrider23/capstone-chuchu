@@ -5,8 +5,15 @@
     <style>
       /* Set the size of the map container */
       #map {
-        height: 90vh;
+        height: 85vh;
         width: 100%;
+      }
+      header nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
       }
     </style>
     <script type="module">
@@ -106,6 +113,24 @@
     </script>
   </head>
   <body>
+    <header>      
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="chat.html">Chat</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="gmaps.html">Maps</a></li>
+          <li><a href="account.html">Account</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+        <button class="logout-button" onclick="logoutUser()">Logout</button>
+      </nav>
+    </header>
     <h3>My Google Maps Demo</h3>
     <div id="map"></div>
 

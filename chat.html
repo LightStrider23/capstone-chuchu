@@ -5,79 +5,125 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Chat</title>
         <style>
-			/* General Styles */
-			body,
-			html {
-				margin: 0;
-				padding: 0;
-				font-family: Arial, sans-serif;
-				background-color: #121212;
-				color: #e0e0e0;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 100vh;
-				overflow: hidden;
-			}
-
-			#chat-container {
-				background-color: #1e1e1e;
-				border-radius: 8px;
-				padding: 20px;
-				width: 90%;
-				max-width: 500px;
-				box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
-			}
-
-			h2 {
-				font-size: 1.5em;
-				color: #ffb74d;
-				margin-bottom: 16px;
-				text-align: center;
-			}
-
-			#rentee-chat,
-			#renter-chat {
-				background-color: #2a2a2a;
-				padding: 15px;
-				border-radius: 8px;
-				max-height: 400px;
-				overflow-y: auto;
-			}
-
-			p {
-				font-size: 1em;
-				line-height: 1.5;
-			}
-
-			.message-input {
-				display: flex;
-				margin-top: 16px;
-			}
-
-			.message-input input {
-				flex: 1;
-				padding: 10px;
-				border: none;
-				border-radius: 4px;
-				background-color: #333;
-				color: #e0e0e0;
-			}
-
-			.message-input button {
-				padding: 10px 15px;
-				border: none;
-				background-color: #ffb74d;
-				color: #1e1e1e;
-				border-radius: 4px;
-				cursor: pointer;
-				margin-left: 8px;
-			}
-
-			.message-input button:hover {
-				background-color: #ffa726;
-			}
-		</style>
+            /* General Styles */
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #121212;
+                color: #e0e0e0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: hidden;
+            }
+    
+            /* Navbar Styles */
+            header {
+                width: 100%;
+                background-color: #1e1e1e;
+                position: fixed;
+                top: 0;
+                padding: 10px 0;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+            }
+            header nav ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+            }
+            header nav ul li {
+                margin: 0 15px;
+            }
+            header nav ul li a {
+                color: #e0e0e0;
+                text-decoration: none;
+                font-size: 1em;
+                padding: 8px 12px;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
+            header nav ul li a:hover {
+                background-color: #333;
+            }
+            .logout-button {
+                color: #ffb74d;
+                background-color: #1e1e1e;
+                border: none;
+                cursor: pointer;
+                font-size: 1em;
+                padding: 8px 12px;
+                border-radius: 4px;
+                margin-left: 10px;
+                transition: background-color 0.3s;
+            }
+            .logout-button:hover {
+                background-color: #333;
+            }
+    
+            #chat-container {
+                background-color: #1e1e1e;
+                border-radius: 8px;
+                padding: 20px;
+                width: 90%;
+                max-width: 500px;
+                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+                margin-top: 80px; /* Offset for fixed navbar */
+            }
+    
+            h2 {
+                font-size: 1.5em;
+                color: #ffb74d;
+                margin-bottom: 16px;
+                text-align: center;
+            }
+    
+            #rentee-chat,
+            #renter-chat {
+                background-color: #2a2a2a;
+                padding: 15px;
+                border-radius: 8px;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+    
+            p {
+                font-size: 1em;
+                line-height: 1.5;
+            }
+    
+            .message-input {
+                display: flex;
+                margin-top: 16px;
+            }
+    
+            .message-input input {
+                flex: 1;
+                padding: 10px;
+                border: none;
+                border-radius: 4px;
+                background-color: #333;
+                color: #e0e0e0;
+            }
+    
+            .message-input button {
+                padding: 10px 15px;
+                border: none;
+                background-color: #ffb74d;
+                color: #1e1e1e;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-left: 8px;
+            }
+    
+            .message-input button:hover {
+                background-color: #ffa726;
+            }
+        </style>
 		<script type="module">
             // Import Firebase SDK
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
@@ -284,6 +330,25 @@
         
 	</head>
 	<body>
+        <header>
+            <nav>
+                <ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="about.html">About</a></li>
+                  <li><a href="services.html">Services</a></li>
+                  <li><a href="chat.html">Chat</a></li>
+                  <li><a href="gallery.html">Gallery</a></li>
+                  <li><a href="gmaps.html">Maps</a></li>
+                  <li><a href="account.html">Account</a></li>
+                  <li><a href="booking.html">Booking</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+                  <li><a href="login.html">Login</a></li>
+                  <li><a href="register.html">Register</a></li>
+                </ul>
+                <button class="logout-button" onclick="logoutUser()">Logout</button>
+              </nav>
+        </header>
+        
 		<div id="chat-container">
 			<p>Loading chat...</p>
 		</div>

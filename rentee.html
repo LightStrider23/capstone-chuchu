@@ -24,6 +24,7 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        text-align: center;
       }
 
       header {
@@ -202,7 +203,9 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="services.html">Services</a></li>
+          <li><a href="chat.html">Chat</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="gmaps.html">Maps</a></li>
           <li><a href="account.html">Account</a></li>
           <li><a href="booking.html">Booking</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -306,6 +309,9 @@
 
                     // Set inner content for the space card
                     spaceCard.innerHTML = `
+                    <div style="display: flex; justify-content: center;">
+    <img src="${space.imageUrl}" alt="Space Image" style="width: 25%; height: 10%; border-radius: 5px;">
+</div>
               <h3>${space.spaceName}</h3>
               <p>Location: ${space.location}</p>
               <p>Total Rooms: ${space.totalRooms}</p>
@@ -339,9 +345,9 @@
       }
 
       function showReservationForm(spaceKey, spaceName) {
-        const reservationForm = document.createElement("div");
-        reservationForm.classList.add("reservationform"); // Add class here
-        reservationForm.innerHTML = `
+    const reservationForm = document.createElement("div");
+    reservationForm.classList.add("reservationform"); // Add class here
+    reservationForm.innerHTML = `
         <div class="modal-content">
             <h2>Reserve ${spaceName}</h2>
             <form id="reservation-form">
@@ -363,144 +369,136 @@
         </div>
     `;
 
-        document.body.appendChild(reservationForm);
+    document.body.appendChild(reservationForm);
 
-        // Close modal logic
-        document.getElementById("close-modal").addEventListener("click", () => {
-          document.body.removeChild(reservationForm);
-        });
+    document.getElementById("close-modal").addEventListener("click", () => {
+        document.body.removeChild(reservationForm);
+    });
 
-        // Retrieve existing reservations from Firebase
-        const reservationRef = ref(
-          database,
-          "reservations/" + auth.currentUser.uid + "/" + spaceKey
-        );
-        get(reservationRef)
-          .then((snapshot) => {
+    const reservationRef = ref(
+        database,
+        "reservations/" + auth.currentUser.uid + "/" + spaceKey
+    );
+
+    get(reservationRef)
+        .then((snapshot) => {
             const reservedDates = [];
 
             if (snapshot.exists()) {
-              const reservations = snapshot.val();
+                const reservations = snapshot.val();
 
-              // Extract reserved date ranges from existing reservations
-              Object.values(reservations).forEach((reservation) => {
-                const checkInDate = new Date(reservation.checkInDate);
-                const checkOutDate = new Date(reservation.checkOutDate);
-
-                // Loop through each day in the reservation range and push to the reservedDates array
-                for (
-                  let date = checkInDate;
-                  date <= checkOutDate;
-                  date.setDate(date.getDate() + 1)
-                ) {
-                  reservedDates.push(new Date(date).setHours(0, 0, 0, 0)); // Normalize date
-                }
-              });
+                Object.values(reservations).forEach((reservation) => {
+                    const checkInDate = new Date(reservation.checkInDate);
+                    const checkOutDate = new Date(reservation.checkOutDate);
+                    for (
+                        let date = checkInDate;
+                        date <= checkOutDate;
+                        date.setDate(date.getDate() + 1)
+                    ) {
+                        reservedDates.push(new Date(date).setHours(0, 0, 0, 0));
+                    }
+                });
             }
 
-            // Initialize flatpickr date pickers with disabled reserved dates
             flatpickr("#checkInDate", {
-              altInput: true,
-              altFormat: "F j, Y",
-              dateFormat: "Y-m-d",
-              disable: reservedDates.map((date) => new Date(date)), // Convert to Date objects
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                disable: reservedDates.map((date) => new Date(date)),
             });
 
             flatpickr("#checkOutDate", {
-              altInput: true,
-              altFormat: "F j, Y",
-              dateFormat: "Y-m-d",
-              disable: reservedDates.map((date) => new Date(date)),
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                disable: reservedDates.map((date) => new Date(date)),
             });
-          })
-          .catch((error) => {
+        })
+        .catch((error) => {
             console.error("Error retrieving reservations:", error);
-          });
+        });
 
-        // Reservation form submission
-        document
-          .getElementById("submit-reservation")
-          .addEventListener("click", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const phoneNumber = document.getElementById("phoneNumber").value;
-            const checkInDate = document.getElementById("checkInDate").value;
-            const checkOutDate = document.getElementById("checkOutDate").value;
+    document.getElementById("submit-reservation").addEventListener("click", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const checkInDate = document.getElementById("checkInDate").value;
+        const checkOutDate = document.getElementById("checkOutDate").value;
+        const paymentAmount = document.getElementById("paymentAmount").value;
 
-            // Mock payment logic
-            const paymentAmount =
-              document.getElementById("paymentAmount").value;
-            const confirmationMessage = `
-            Payment Confirmation:
-            Name: ${name}
-            Email: ${email}
-            Phone Number: ${phoneNumber}
-            Check-in Date: ${checkInDate}
-            Check-out Date: ${checkOutDate}
-            Total Amount Paid: $${paymentAmount}
-        `;
-            alert(confirmationMessage); // Display the confirmation message as an alert
+        const user = auth.currentUser;
+        if (!user) {
+            alert("User is not logged in.");
+            return;
+        }
+        const userUid = user.uid;
 
-            // Retrieve current user's UID
-            const user = auth.currentUser;
-            if (!user) {
-              alert("User is not logged in.");
-              return;
-            }
-            const userUid = user.uid;
+        const userReservationRef = ref(
+            database,
+            `reservations/${userUid}/${spaceKey}`
+        );
 
-            // Send reservation data to Firebase under the path: 'reservations/{userUid}/{spaceKey}/{reservationRef}'
-            const userReservationRef = ref(
-              database,
-              `reservations/${userUid}/${spaceKey}`
-            );
+        get(userReservationRef)
+            .then((snapshot) => {
+                const reservations = snapshot.val() || {};
+                const newReservation = {
+                    name,
+                    email,
+                    phoneNumber,
+                    checkInDate,
+                    checkOutDate,
+                    paymentAmount
+                };
 
-            get(userReservationRef)
-              .then((snapshot) => {
-                if (snapshot.exists()) {
-                  const reservations = snapshot.val();
-                  set(userReservationRef, {
+                set(userReservationRef, {
                     ...reservations,
-                    [Date.now()]: {
-                      name: name,
-                      email: email,
-                      phoneNumber: phoneNumber,
-                      checkInDate: checkInDate,
-                      checkOutDate: checkOutDate,
-                    },
-                  })
+                    [Date.now()]: newReservation,
+                })
                     .then(() => {
-                      alert("Reservation successful!");
-                      document.body.removeChild(reservationForm);
+                        alert("Reservation successful!");
+                        document.body.removeChild(reservationForm);
+
+                        // Send reservation details to user's email via PHP mailer
+                        fetch('email.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                userEmail: email,
+                                reservationDetails: {
+                                    name,
+                                    email,
+                                    phoneNumber,
+                                    checkInDate,
+                                    checkOutDate,
+                                    paymentAmount
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                alert("Confirmation email sent successfully.");
+                            } else {
+                                alert("Error sending confirmation email: " + data.message);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error sending email:", error);
+                        });
                     })
                     .catch((error) => {
-                      console.error("Error making reservation:", error);
+                        console.error("Error making reservation:", error);
                     });
-                } else {
-                  set(userReservationRef, {
-                    [Date.now()]: {
-                      name: name,
-                      email: email,
-                      phoneNumber: phoneNumber,
-                      checkInDate: checkInDate,
-                      checkOutDate: checkOutDate,
-                    },
-                  })
-                    .then(() => {
-                      alert("Reservation successful!");
-                      document.body.removeChild(reservationForm);
-                    })
-                    .catch((error) => {
-                      console.error("Error making reservation:", error);
-                    });
-                }
-              })
-              .catch((error) => {
+            })
+            .catch((error) => {
                 console.error("Error retrieving reservations:", error);
-              });
-          });
-      }
+            });
+    });
+}
+
     </script>
   </body>
 </html>

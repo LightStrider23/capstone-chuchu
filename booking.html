@@ -135,7 +135,9 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="services.html">Services</a></li>
+          <li><a href="chat.html">Chat</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="gmaps.html">Maps</a></li>
           <li><a href="account.html">Account</a></li>
           <li><a href="booking.html">Booking</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -204,36 +206,50 @@
     });
 
     function displayBookedRooms(userUid) {
-      const userReservationsRef = ref(database, "reservations/" + userUid); // Path to user's reservations
+  const userReservationsRef = ref(database, "reservations/" + userUid); // Path to user's reservations
+  const rentersRef = ref(database, "renters"); // Reference to renters node to retrieve space details
 
-      console.log("Fetching bookings for user:", userUid);
+  console.log("Fetching bookings for user:", userUid);
 
-      get(userReservationsRef)
-        .then((snapshot) => {
-          const bookingsList = document.getElementById("bookings-list");
-          bookingsList.innerHTML = ""; // Clear existing content
+  get(userReservationsRef)
+    .then((snapshot) => {
+      const bookingsList = document.getElementById("bookings-list");
+      bookingsList.innerHTML = ""; // Clear existing content
 
-          if (snapshot.exists()) {
-            const userReservations = snapshot.val();
-            console.log("User reservations:", userReservations); // Log user data for debugging
+      if (snapshot.exists()) {
+        const userReservations = snapshot.val();
+        console.log("User reservations:", userReservations); // Log user data for debugging
+
+        // Fetch renters data to cross-reference space details
+        get(rentersRef)
+          .then((rentersSnapshot) => {
+            const rentersData = rentersSnapshot.val();
 
             // Loop through each reservation for the user
             for (const reservationKey in userReservations) {
-              const reservationData = userReservations[reservationKey]; // Get the nested reservation object
-              console.log(
-                "Reservation data for key:",
-                reservationKey,
-                reservationData
-              ); // Log reservation data
+              const reservationData = userReservations[reservationKey];
 
-              // Now loop through the nested reservation data
+              // Loop through the nested reservation data
               for (const detailKey in reservationData) {
                 const bookingDetail = reservationData[detailKey]; // Access the actual reservation details
                 console.log("Booking details:", bookingDetail); // Log the booking details
 
+                // Find the renter's space details using the reservationKey
+                let spaceName = "Unknown Space";
+                for (const renterUid in rentersData) {
+                  const renter = rentersData[renterUid];
+                  if (renter.spaces && renter.spaces[reservationKey]) {
+                    spaceName = renter.spaces[reservationKey].spaceName || "Unknown Space";
+                    break;
+                  }
+                }
+
                 // Create HTML structure for each booking
                 const bookingItem = document.createElement("div");
                 bookingItem.classList.add("booking-item");
+
+                const spaceNameElem = document.createElement("p");
+                spaceNameElem.textContent = `Space Name: ${spaceName}`;
 
                 const nameElem = document.createElement("p");
                 nameElem.textContent = `Name: ${
@@ -242,9 +258,7 @@
 
                 const emailElem = document.createElement("p");
                 emailElem.textContent = `Email: ${
-                  bookingDetail.email !== undefined
-                    ? bookingDetail.email
-                    : "N/A"
+                  bookingDetail.email !== undefined ? bookingDetail.email : "N/A"
                 }`;
 
                 const phoneNumberElem = document.createElement("p");
@@ -269,6 +283,7 @@
                 }`;
 
                 // Append the details to the booking item
+                bookingItem.appendChild(spaceNameElem);
                 bookingItem.appendChild(nameElem);
                 bookingItem.appendChild(emailElem);
                 bookingItem.appendChild(phoneNumberElem);
@@ -279,15 +294,21 @@
                 bookingsList.appendChild(bookingItem);
               }
             }
-          } else {
-            bookingsList.innerHTML = "<p>No booked rooms found.</p>";
-          }
-        })
-        .catch((error) => {
-          console.error("Error retrieving user reservations:", error);
-          alert("Failed to retrieve user reservations: " + error.message);
-        });
-    }
+          })
+          .catch((error) => {
+            console.error("Error retrieving renters data:", error);
+            alert("Failed to retrieve space details: " + error.message);
+          });
+      } else {
+        bookingsList.innerHTML = "<p>No booked rooms found.</p>";
+      }
+    })
+    .catch((error) => {
+      console.error("Error retrieving user reservations:", error);
+      alert("Failed to retrieve user reservations: " + error.message);
+    });
+}
+
 
     // Logout button functionality
     document.getElementById("logout-button").addEventListener("click", () => {
